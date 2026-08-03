@@ -1,136 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta name="google-site-verification" content="KeOo85tjtoZ7tXMr2kZJHFuHoEzbD65n21uht3sK7O4">
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#4f46e5">
-<title>QR Code Generator — URL, WiFi, UPI, vCard Free | Splitdrop</title>
-<meta name="description" content="Generate QR codes for URLs, text, email, phone, SMS, WhatsApp, WiFi, UPI and vCards. Custom colors, logo, PNG and SVG download — free and private.">
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-<link rel="canonical" href="https://zubairbusiness132-commits.github.io/Splitdrop/qr-generator.html">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Splitdrop">
-<meta property="og:title" content="QR Code Generator — Splitdrop">
-<meta property="og:description" content="Free QR code generator with custom colors and logo, PNG/SVG export.">
-<meta property="og:url" content="https://zubairbusiness132-commits.github.io/Splitdrop/qr-generator.html">
-<meta property="og:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Splitdrop tools preview">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="QR Code Generator — Splitdrop">
-<meta name="twitter:description" content="Free QR code generator with custom colors and logo, PNG/SVG export.">
-<meta name="twitter:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="dns-prefetch" href="//fonts.googleapis.com">
-<link rel="dns-prefetch" href="//fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/responsive.css">
-<script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "QR Code Generator",
-  "description": "Create QR codes for links, WiFi, UPI and contact cards in the browser.",
-  "url": "https://zubairbusiness132-commits.github.io/Splitdrop/qr-generator.html",
-  "image": "https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png",
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Any",
-  "inLanguage": "en",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
-}</script>
-</head>
-<body>
-
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="index.html"><span class="dot"></span>Splitdrop</a>
-    <nav class="nav-links" id="navLinks">
-      <a href="image-compressor.html">Compressor</a>
-      <a href="image-converter.html">Converter</a>
-      <a href="pdf-merge.html">PDF Merge</a>
-      <a href="pdf-split.html">PDF Split</a>
-      <a href="qr-generator.html" class="active" aria-current="page">QR Code</a>
-    </nav>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button type="button" class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
-      <button type="button" class="nav-burger" id="navBurger" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks">☰</button>
-    </div>
-  </div>
-</header>
-
-<div class="container"><div class="ad-slot"><!-- AD SLOT: banner below header --></div></div>
-
-<div class="tool-page-header container">
-  <h1>QR Code Generator</h1>
-  <p>Create a QR code for links, WiFi, UPI, contact cards and more — with your own colors and logo.</p>
-</div>
-
-<div class="container">
-  <div class="tool-workspace">
-    <div class="qr-type-grid" id="typeGrid">
-      <div class="qr-type-btn active" data-type="url">🔗 URL</div>
-      <div class="qr-type-btn" data-type="text">📝 Text</div>
-      <div class="qr-type-btn" data-type="email">✉️ Email</div>
-      <div class="qr-type-btn" data-type="phone">📞 Phone</div>
-      <div class="qr-type-btn" data-type="sms">💬 SMS</div>
-      <div class="qr-type-btn" data-type="whatsapp">🟢 WhatsApp</div>
-      <div class="qr-type-btn" data-type="wifi">📶 WiFi</div>
-      <div class="qr-type-btn" data-type="upi">💸 UPI</div>
-      <div class="qr-type-btn" data-type="vcard">🪪 Contact card</div>
-    </div>
-
-    <div class="qr-layout">
-      <div>
-        <div id="fieldsContainer"></div>
-
-        <div class="qr-field">
-          <label>Logo (optional, PNG with transparent background works best)</label>
-          <input type="file" id="logoInput" accept="image/*">
-        </div>
-
-        <div class="color-row">
-          <div>Foreground <input type="color" id="fgColor" value="#15151c"></div>
-          <div>Background <input type="color" id="bgColor" value="#ffffff"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="qr-preview-box">
-          <canvas id="qrCanvas"></canvas>
-        </div>
-        <div class="control-row">
-          <button type="button" class="btn btn-accent" id="downloadPng">⬇️ PNG</button>
-          <button type="button" class="btn btn-outline" id="downloadSvg">⬇️ SVG</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ad-slot"><!-- AD SLOT: native ad after tool --></div>
-</div>
-
-<footer class="site-footer">
-  <div class="container">
-    <div class="ad-slot"><!-- AD SLOT: footer banner --></div>
-    <div class="footer-bottom">
-      <span>© 2026 Splitdrop.</span>
-      <a href="index.html">← Back to all tools</a>
-    </div>
-  </div>
-</footer>
-
-<script src="js/main.js"></script>
-<script src="js/qr.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="google-site-verification" content="d81652f9a9bf28726b372385ee394877_splitdrop_verify" />
+    <title>QR Code Generator — Free Custom QR Codes Online | SplitDrop</title>
+    <meta name="description" content="Generate custom QR codes for URLs, WiFi networks, and contact cards. Download PNG/SVG high resolution." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3c6 8 10 13 10 18a10 10 0 0 1-20 0c0-5 4-10 10-18z' fill='%23FF5A6E'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 antialiased min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

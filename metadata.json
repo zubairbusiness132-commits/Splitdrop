@@ -1,0 +1,6 @@
+{
+  "name": "SplitDrop - Multi-Tool Suite",
+  "description": "Free online multi-tool suite featuring SplitDrop image splitter & merger, image compressor, format converter, PDF merge, PDF split, and QR code generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
