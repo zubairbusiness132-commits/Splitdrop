@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="KeOo85tjtoZ7tXMr2kZJHFuHoEzbD65n21uht3sK7O4">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#4f46e5">
+<title>PDF Split — Extract or Split PDF Pages Free | Splitdrop</title>
+<meta name="description" content="Split a PDF into individual pages or extract a custom page range. Free, private, works entirely in your browser.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://zubairbusiness132-commits.github.io/Splitdrop/pdf-split.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Splitdrop">
+<meta property="og:title" content="PDF Split — Splitdrop">
+<meta property="og:description" content="Split or extract pages from a PDF, free and private.">
+<meta property="og:url" content="https://zubairbusiness132-commits.github.io/Splitdrop/pdf-split.html">
+<meta property="og:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Splitdrop tools preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PDF Split — Splitdrop">
+<meta name="twitter:description" content="Split or extract pages from a PDF, free and private.">
+<meta name="twitter:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PDF Split",
+  "description": "Split PDF pages or extract a page range in the browser.",
+  "url": "https://zubairbusiness132-commits.github.io/Splitdrop/pdf-split.html",
+  "image": "https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "en",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="dot"></span>Splitdrop</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="image-compressor.html">Compressor</a>
+      <a href="image-converter.html">Converter</a>
+      <a href="pdf-merge.html">PDF Merge</a>
+      <a href="pdf-split.html" class="active" aria-current="page">PDF Split</a>
+      <a href="qr-generator.html">QR Code</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button type="button" class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+      <button type="button" class="nav-burger" id="navBurger" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="container"><div class="ad-slot"><!-- AD SLOT: banner below header --></div></div>
+
+<div class="tool-page-header container">
+  <h1>PDF Split</h1>
+  <p>Pull out the exact pages you need, or split every page into its own file.</p>
+</div>
+
+<div class="container">
+  <div class="tool-workspace">
+    <label class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept="application/pdf">
+      <div class="ic">✂️</div>
+      <div><b>Click to choose</b> or drag & drop a PDF file here</div>
+    </label>
+
+    <div id="pdfInfo" style="display:none;margin-top:16px;font-size:13.5px;color:var(--muted);"></div>
+
+    <div id="splitOptions" style="display:none;margin-top:18px;">
+      <div class="control-row">
+        <label for="rangeInput">Extract page range (e.g. 1-3,5,7-9)</label>
+        <input type="text" id="rangeInput" style="width:180px;" aria-describedby="rangeHelp">
+      </div>
+      <div class="control-row">
+        <button type="button" class="btn btn-accent" id="extractBtn">⬇️ Extract range as PDF</button>
+        <button type="button" class="btn btn-outline" id="splitAllBtn">📦 Split every page (ZIP)</button>
+      </div>
+    </div>
+
+    <div class="result-box" id="resultBox" style="display:none;"></div>
+  </div>
+
+  <div class="ad-slot"><!-- AD SLOT: native ad after tool --></div>
+</div>
+
+<section class="section container">
+  <h2>How it works</h2>
+  <p>1. Add a PDF file. 2. Either type a page range to extract as one new PDF, or split the whole document into individual single-page PDFs bundled in a ZIP. Everything runs locally using pdf-lib — nothing is uploaded.</p>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="ad-slot"><!-- AD SLOT: footer banner --></div>
+    <div class="footer-bottom">
+      <span>© 2026 Splitdrop.</span>
+      <a href="index.html">← Back to all tools</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/pdfsplit.js"></script>
+</body>
+</html>

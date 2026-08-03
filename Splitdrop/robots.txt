@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zubairbusiness132-commits.github.io/Splitdrop/sitemap.xml
