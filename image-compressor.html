@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="KeOo85tjtoZ7tXMr2kZJHFuHoEzbD65n21uht3sK7O4">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#4f46e5">
+<title>Image Compressor — Reduce JPG, PNG, WEBP Size Free | Splitdrop</title>
+<meta name="description" content="Compress JPG, PNG and WEBP images in your browser. Adjust quality, preview before and after size, batch compress and download — free, private, no uploads.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://zubairbusiness132-commits.github.io/Splitdrop/image-compressor.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Splitdrop">
+<meta property="og:title" content="Image Compressor — Splitdrop">
+<meta property="og:description" content="Free browser-based image compressor. JPG, PNG, WEBP supported.">
+<meta property="og:url" content="https://zubairbusiness132-commits.github.io/Splitdrop/image-compressor.html">
+<meta property="og:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Splitdrop tools preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Image Compressor — Splitdrop">
+<meta name="twitter:description" content="Free browser-based image compressor. JPG, PNG, WEBP supported.">
+<meta name="twitter:image" content="https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Image Compressor",
+  "description": "Compress JPG, PNG and WEBP images directly in the browser.",
+  "url": "https://zubairbusiness132-commits.github.io/Splitdrop/image-compressor.html",
+  "image": "https://zubairbusiness132-commits.github.io/Splitdrop/assets/images/og-cover.png",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "en",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="dot"></span>Splitdrop</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="image-compressor.html" class="active" aria-current="page">Compressor</a>
+      <a href="image-converter.html">Converter</a>
+      <a href="pdf-merge.html">PDF Merge</a>
+      <a href="pdf-split.html">PDF Split</a>
+      <a href="qr-generator.html">QR Code</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button type="button" class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+      <button type="button" class="nav-burger" id="navBurger" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="container"><div class="ad-slot"><!-- AD SLOT: banner below header --></div></div>
+
+<div class="tool-page-header container">
+  <h1>Image Compressor</h1>
+  <p>Shrink JPG, PNG or WEBP files without losing visible quality. Everything runs locally — nothing leaves your device.</p>
+</div>
+
+<div class="container">
+  <div class="tool-workspace">
+    <label class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple>
+      <div class="ic">🖼️</div>
+      <div><b>Click to choose</b> or drag & drop images here</div>
+      <div style="font-size:12px;color:var(--muted-2);margin-top:6px;">JPG, PNG, WEBP — multiple files supported</div>
+    </label>
+
+    <div class="control-row">
+      <label for="qualitySlider">Compression quality: <b id="qualityVal">70%</b></label>
+      <input type="range" id="qualitySlider" min="10" max="95" value="70">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div class="control-row" id="batchActions" style="display:none;">
+      <button type="button" class="btn btn-outline" id="clearAllBtn">Clear all</button>
+      <button type="button" class="btn btn-accent" id="downloadZipBtn">⬇️ Download all as ZIP</button>
+    </div>
+  </div>
+
+  <div class="ad-slot"><!-- AD SLOT: native ad after tool --></div>
+</div>
+
+<section class="section container">
+  <h2>How it works</h2>
+  <p>1. Add one or more images. 2. Adjust the quality slider — lower means smaller file size. 3. Download each image individually or grab them all at once as a ZIP. Compression happens entirely in your browser using the Canvas API, so your files are never uploaded anywhere.</p>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="ad-slot"><!-- AD SLOT: footer banner --></div>
+    <div class="footer-bottom">
+      <span>© 2026 Splitdrop.</span>
+      <a href="index.html">← Back to all tools</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/compressor.js"></script>
+</body>
+</html>
