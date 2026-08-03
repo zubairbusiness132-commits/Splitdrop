@@ -453,13 +453,40 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
         {activeTab === 'split' && (
           <div className="space-y-5">
             {!splitImg ? (
-              <label className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-3xl bg-indigo-50/30 dark:bg-indigo-950/20 hover:border-indigo-400 transition-colors cursor-pointer text-center group">
+              <div
+                onClick={() => splitInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={async (e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file && file.type.startsWith('image/')) {
+                    try {
+                      const img = await loadImage(file);
+                      setSplitImg(img);
+                      setSplitImgTrim(computeTrim(img));
+                      onShowToast('Image loaded into SplitDrop');
+                    } catch {
+                      onShowToast('Failed to load image');
+                    }
+                  }
+                }}
+                className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-3xl bg-indigo-50/30 dark:bg-indigo-950/20 hover:border-indigo-400 transition-colors cursor-pointer text-center group"
+              >
                 <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <svg width="32" height="32" fill="none" stroke="#6366F1" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                 </div>
                 <p className="text-base font-bold text-slate-700 dark:text-slate-200">Drop your file here or tap to upload</p>
                 <p className="text-xs text-slate-400 mt-1">Supports PNG, JPG, WebP, GIF, BMP</p>
-                <button type="button" className="mt-5 px-6 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-semibold shadow-sm text-slate-700 dark:text-slate-200 group-hover:bg-indigo-50">Browse Files</button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    splitInputRef.current?.click();
+                  }}
+                  className="mt-5 px-6 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-semibold shadow-sm text-slate-700 dark:text-slate-200 group-hover:bg-indigo-50"
+                >
+                  Browse Files
+                </button>
                 <input
                   ref={splitInputRef}
                   type="file"
@@ -479,7 +506,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     }
                   }}
                 />
-              </label>
+              </div>
             ) : (
               <>
                 {/* Orientation Controls */}
