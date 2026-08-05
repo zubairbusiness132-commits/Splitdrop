@@ -4,7 +4,8 @@ export type ToolId =
   | 'image-converter' 
   | 'pdf-merge' 
   | 'pdf-split' 
-  | 'qr-generator';
+  | 'qr-generator'
+  | 'resume-builder';
 
 export interface ToolMeta {
   id: ToolId;
@@ -14,7 +15,7 @@ export interface ToolMeta {
   icon: string;
   path: string;
   filename: string;
-  category: 'Image Tools' | 'PDF Tools' | 'Generators';
+  category: 'Image Tools' | 'PDF Tools' | 'Generators' | 'Career Tools';
   badge?: string;
   features: string[];
 }

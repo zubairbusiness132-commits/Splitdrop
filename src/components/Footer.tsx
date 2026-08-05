@@ -116,6 +116,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   QR Code Generator
                 </a>
               </li>
+              <li>
+                <a href="/resume-builder.html" onClick={(e) => { e.preventDefault(); onNavigate('/resume-builder.html'); }} className="hover:text-indigo-600 transition-colors">
+                  Resume Builder
+                </a>
+              </li>
             </ul>
           </div>
         </div>

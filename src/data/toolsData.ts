@@ -72,6 +72,18 @@ export const TOOLS_DATA: ToolMeta[] = [
     category: 'Generators',
     badge: 'Free',
     features: ['URL & WiFi Templates', 'Custom Brand Colors', 'PNG & SVG Formats', 'Instant Clipboard Copy', 'Vector Crisp Quality']
+  },
+  {
+    id: 'resume-builder',
+    title: 'Resume Builder',
+    navTitle: 'Resume Builder',
+    description: 'Create beautiful ATS-friendly resumes completely in your browser. No signup, no server, no uploads.',
+    icon: '📄',
+    path: '/resume-builder.html',
+    filename: 'resume-builder.html',
+    category: 'Career Tools',
+    badge: 'New',
+    features: ['ATS Friendly', '50+ Templates', 'PDF Export', 'Live Preview', '100% Offline Capable']
   }
 ];
 

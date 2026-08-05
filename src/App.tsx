@@ -11,14 +11,28 @@ import { ImageConverterTool } from './components/tools/ImageConverterTool';
 import { PdfMergeTool } from './components/tools/PdfMergeTool';
 import { PdfSplitTool } from './components/tools/PdfSplitTool';
 import { QrGeneratorTool } from './components/tools/QrGeneratorTool';
+import { ResumeBuilderTool } from './components/tools/ResumeBuilderTool';
 import { TOOLS_DATA, HOMEPAGE_FAQS } from './data/toolsData';
 import { ArrowRight, ChevronDown, CheckCircle2, Shield, Zap, Sparkles } from 'lucide-react';
 
 export default function App() {
   // Path routing state
   const [currentPath, setCurrentPath] = useState<string>(() => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectParam = searchParams.get('p');
+      if (redirectParam) {
+        const cleanPath = '/' + redirectParam.replace(/^\//, '');
+        window.history.replaceState({}, '', window.location.pathname.replace(/\/$/, '') + cleanPath);
+        return cleanPath;
+      }
+    } catch {
+      // Ignore URL parsing fallback
+    }
+
     const p = window.location.pathname;
-    return p === '' ? '/' : p;
+    const normalized = p.replace(/^\/Splitdrop/i, '');
+    return normalized === '' ? '/' : normalized;
   });
 
   // Dark Mode state with safe storage & matchMedia
@@ -83,9 +97,13 @@ export default function App() {
   };
 
   // Find tool metadata for current page if viewing a tool page
-  const activeTool = TOOLS_DATA.find(
-    (t) => t.path === currentPath || (currentPath.endsWith(t.filename) && t.filename !== 'index.html')
-  );
+  const activeTool = TOOLS_DATA.find((t) => {
+    if (t.path === currentPath) return true;
+    if (t.filename !== 'index.html' && currentPath.endsWith(t.filename)) return true;
+    if (t.filename !== 'index.html' && currentPath.endsWith(t.id)) return true;
+    if (t.filename !== 'index.html' && currentPath.endsWith(`/${t.id}`)) return true;
+    return false;
+  });
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#F1F5F9] text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors selection:bg-indigo-600 selection:text-white">
@@ -340,6 +358,7 @@ export default function App() {
               {activeTool.id === 'pdf-merge' && <PdfMergeTool onShowToast={triggerToast} />}
               {activeTool.id === 'pdf-split' && <PdfSplitTool onShowToast={triggerToast} />}
               {activeTool.id === 'qr-generator' && <QrGeneratorTool onShowToast={triggerToast} />}
+              {activeTool.id === 'resume-builder' && <ResumeBuilderTool onShowToast={triggerToast} />}
             </div>
 
             {/* TOOL PAGE AD 2: Native below result/output */}

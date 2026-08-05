@@ -1,0 +1,16 @@
+{
+  "short_name": "SplitDrop",
+  "name": "SplitDrop Free Online Tools Suite",
+  "description": "Split, compress, and convert images, merge & split PDFs, generate QR codes, and build ATS resumes online.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3c6 8 10 13 10 18a10 10 0 0 1-20 0c0-5 4-10 10-18z' fill='%234F46E5'/%3E%3C/svg%3E",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "display": "standalone"
+}
