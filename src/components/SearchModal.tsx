@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { getTranslatedTools } from '../data/toolsData';
 import { useLanguage } from '../context/LanguageContext';
+import { getLinkUrl } from '../lib/paths';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -52,7 +53,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSel
               <button
                 key={tool.id}
                 onClick={() => {
-                  onSelectTool(tool.path);
+                  onSelectTool(getLinkUrl(tool.path));
                   onClose();
                 }}
                 className="w-full text-left p-3.5 rounded-2xl hover:bg-indigo-50/80 dark:hover:bg-indigo-950/50 transition-all flex items-center gap-3 group border border-transparent hover:border-indigo-200/50 dark:hover:border-indigo-800/50 cursor-pointer"

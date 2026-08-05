@@ -20,7 +20,12 @@ function copyToolHtmlPagesPlugin(): Plugin {
             'pdf-split.html',
             'qr-generator.html',
             'resume-builder.html',
-            'split-drop.html'
+            'split-drop.html',
+            'about.html',
+            'privacy.html',
+            'terms.html',
+            'disclaimer.html',
+            'contact.html'
           ];
           toolFiles.forEach((file) => {
             const destPath = path.join(distDir, file);

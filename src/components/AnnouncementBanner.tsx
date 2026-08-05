@@ -1,5 +1,6 @@
 import React from 'react';
 import { ANNOUNCEMENTS_CONFIG, AnnouncementItem } from '../data/announcementsData';
+import { getLinkUrl } from '../lib/paths';
 
 interface AnnouncementBannerProps {
   position: 'top' | 'bottom';
@@ -40,21 +41,8 @@ export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = ({
     <div key={keyPrefix} className="flex items-center gap-8 pr-8 shrink-0">
       {messages.map((item, idx) => {
         const isClickable = Boolean(item.link && onNavigate);
-
-        return (
-          <div
-            key={`${keyPrefix}-${item.id}-${idx}`}
-            onClick={() => {
-              if (item.link && onNavigate) {
-                onNavigate(item.link);
-              }
-            }}
-            className={`inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold tracking-wide transition-colors ${
-              isClickable
-                ? 'cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-300'
-                : 'text-slate-800 dark:text-slate-200'
-            }`}
-          >
+        const itemContent = (
+          <>
             {/* Icon / Emoji */}
             {item.icon && <span className="text-sm select-none">{item.icon}</span>}
 
@@ -74,6 +62,33 @@ export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = ({
 
             {/* Bullet Separator between items */}
             <span className="text-slate-400 dark:text-slate-600 text-xs ml-4 select-none">•</span>
+          </>
+        );
+
+        if (isClickable && item.link) {
+          return (
+            <a
+              key={`${keyPrefix}-${item.id}-${idx}`}
+              href={getLinkUrl(item.link)}
+              onClick={(e) => {
+                if (onNavigate && item.link) {
+                  e.preventDefault();
+                  onNavigate(getLinkUrl(item.link));
+                }
+              }}
+              className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold tracking-wide transition-colors cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-300 text-slate-800 dark:text-slate-200"
+            >
+              {itemContent}
+            </a>
+          );
+        }
+
+        return (
+          <div
+            key={`${keyPrefix}-${item.id}-${idx}`}
+            className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold tracking-wide transition-colors text-slate-800 dark:text-slate-200"
+          >
+            {itemContent}
           </div>
         );
       })}

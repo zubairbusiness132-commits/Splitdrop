@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Zap, Lock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { getLinkUrl } from '../lib/paths';
 
 interface FooterProps {
   onNavigate: (path: string) => void;
@@ -80,17 +81,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h5>
             <ul className="space-y-2 text-xs font-medium text-slate-600 dark:text-slate-400">
               <li>
-                <a href="/" onClick={(e) => { e.preventDefault(); onNavigate('/'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   SplitDrop Image Splitter & Merger
                 </a>
               </li>
               <li>
-                <a href="/image-compressor.html" onClick={(e) => { e.preventDefault(); onNavigate('/image-compressor.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/image-compressor.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/image-compressor.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   Image Compressor
                 </a>
               </li>
               <li>
-                <a href="/image-converter.html" onClick={(e) => { e.preventDefault(); onNavigate('/image-converter.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/image-converter.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/image-converter.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   Image Converter
                 </a>
               </li>
@@ -104,22 +105,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h5>
             <ul className="space-y-2 text-xs font-medium text-slate-600 dark:text-slate-400">
               <li>
-                <a href="/pdf-merge.html" onClick={(e) => { e.preventDefault(); onNavigate('/pdf-merge.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/pdf-merge.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/pdf-merge.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   PDF Merge Tool
                 </a>
               </li>
               <li>
-                <a href="/pdf-split.html" onClick={(e) => { e.preventDefault(); onNavigate('/pdf-split.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/pdf-split.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/pdf-split.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   PDF Splitter & Extractor
                 </a>
               </li>
               <li>
-                <a href="/qr-generator.html" onClick={(e) => { e.preventDefault(); onNavigate('/qr-generator.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/qr-generator.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/qr-generator.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   QR Code Generator
                 </a>
               </li>
               <li>
-                <a href="/resume-builder.html" onClick={(e) => { e.preventDefault(); onNavigate('/resume-builder.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/resume-builder.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/resume-builder.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   Resume Builder
                 </a>
               </li>
@@ -133,27 +134,27 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h5>
             <ul className="space-y-2 text-xs font-medium text-slate-600 dark:text-slate-400">
               <li>
-                <a href="/about.html" onClick={(e) => { e.preventDefault(); onNavigate('/about.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/about.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/about.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('aboutSplitDrop', 'About SplitDrop')}
                 </a>
               </li>
               <li>
-                <a href="/privacy.html" onClick={(e) => { e.preventDefault(); onNavigate('/privacy.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/privacy.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/privacy.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('privacy', 'Privacy Policy')}
                 </a>
               </li>
               <li>
-                <a href="/terms.html" onClick={(e) => { e.preventDefault(); onNavigate('/terms.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/terms.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/terms.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('terms', 'Terms of Service')}
                 </a>
               </li>
               <li>
-                <a href="/disclaimer.html" onClick={(e) => { e.preventDefault(); onNavigate('/disclaimer.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/disclaimer.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/disclaimer.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('disclaimer', 'Disclaimer')}
                 </a>
               </li>
               <li>
-                <a href="/contact.html" onClick={(e) => { e.preventDefault(); onNavigate('/contact.html'); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <a href={getLinkUrl('/contact.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/contact.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('contactSupport', 'Contact Support')}
                 </a>
               </li>

@@ -131,7 +131,9 @@ export const UI_TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     copiedToClipboard: 'Copied to Clipboard',
 
     // Image Compressor
-    batchImageCompressor: 'Batch Image Compressor',
+    batchImageCompressor: 'Image Compressor',
+    imageCompressorTitle: 'Image Compressor',
+    imageCompressorNav: 'Image Compressor',
     compressorSubtitle: 'Reduce PNG, JPG, and WebP image size up to 90% without quality degradation. 100% private in-browser compression.',
     dropImagesCompress: 'Drop your images here or click to upload',
     supportsMultipleFiles: 'Supports multiple files (PNG, JPG, WebP)',
@@ -143,7 +145,8 @@ export const UI_TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     downloadFile: 'Download File',
 
     // Image Converter
-    imageConverterTitle: 'Batch Image Converter',
+    imageConverterTitle: 'Image Converter',
+    imageConverterNav: 'Image Converter',
     converterSubtitle: 'Convert PNG, JPG, WebP, GIF, and BMP formats instantly. 100% client-side conversion.',
     dropImagesConvert: 'Drop images here to convert',
     convertAllTo: 'Convert All to',

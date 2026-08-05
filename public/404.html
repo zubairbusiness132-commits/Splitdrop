@@ -2,11 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>SplitDrop - Free Online Tool Suite</title>
+    <title>SplitDrop — Free Online Tool Suite</title>
     <script type="text/javascript">
-      // Single Page Apps for GitHub Pages redirection script
-      var segmentCount = 0;
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      // For project site https://zubairbusiness132-commits.github.io/Splitdrop/
+      var segmentCount = 1;
       var l = window.location;
+      var pathSegments = l.pathname.split('/').filter(Boolean);
+      
+      // Check if first segment matches repository name
+      if (pathSegments.length > 0 && pathSegments[0].toLowerCase() === 'splitdrop') {
+        segmentCount = 1;
+      } else {
+        segmentCount = 0;
+      }
+
       l.replace(
         l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=' +
         l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +

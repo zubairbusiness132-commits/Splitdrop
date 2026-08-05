@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { getLinkUrl } from '../lib/paths';
 
 interface BackButtonProps {
   onNavigate: (path: string) => void;
@@ -24,7 +25,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
       window.history.back();
     } else {
       // Fallback redirect safely to SplitDrop homepage
-      onNavigate('/');
+      onNavigate(getLinkUrl('/'));
     }
   };
 

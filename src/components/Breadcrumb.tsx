@@ -1,6 +1,7 @@
 import React from 'react';
 import { BreadcrumbItem } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { getLinkUrl } from '../lib/paths';
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
@@ -26,11 +27,11 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, onNavigate, class
               </span>
             ) : (
               <a
-                href={item.path}
+                href={getLinkUrl(item.path)}
                 onClick={(e) => {
                   if (onNavigate && item.path) {
                     e.preventDefault();
-                    onNavigate(item.path);
+                    onNavigate(getLinkUrl(item.path));
                   }
                 }}
                 className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors focus:outline-none focus:underline"

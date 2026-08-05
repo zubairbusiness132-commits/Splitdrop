@@ -3,6 +3,7 @@ import { Search, Moon, Sun, ChevronDown, Wrench, Globe } from 'lucide-react';
 import { getTranslatedTools } from '../data/toolsData';
 import { SUPPORTED_LANGUAGES, LanguageCode } from '../lib/i18n';
 import { useLanguage } from '../context/LanguageContext';
+import { getLinkUrl } from '../lib/paths';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -36,10 +37,10 @@ export const Header: React.FC<HeaderProps> = ({
         
         {/* Brand Logo */}
         <a
-          href="/"
+          href={getLinkUrl('/')}
           onClick={(e) => {
             e.preventDefault();
-            onNavigate('/');
+            onNavigate(getLinkUrl('/'));
           }}
           className="flex items-center gap-2.5 group cursor-pointer"
         >
@@ -59,8 +60,8 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Navigation Links */}
         <nav className="hidden md:flex items-center gap-2 font-medium text-xs lg:text-sm text-slate-600 dark:text-slate-300">
           <a
-            href="/"
-            onClick={(e) => { e.preventDefault(); onNavigate('/'); }}
+            href={getLinkUrl('/')}
+            onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/')); }}
             className={`px-3.5 py-2 rounded-xl transition-all ${
               currentPath === '/' || currentPath === '/index.html'
                 ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 shadow-xs'
@@ -85,10 +86,10 @@ export const Header: React.FC<HeaderProps> = ({
                 {translatedTools.map((tool) => (
                   <a
                     key={tool.id}
-                    href={tool.path}
+                    href={getLinkUrl(tool.path)}
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate(tool.path);
+                      onNavigate(getLinkUrl(tool.path));
                       setToolsDropdownOpen(false);
                     }}
                     className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-semibold transition-all ${

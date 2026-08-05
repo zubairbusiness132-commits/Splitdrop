@@ -102,16 +102,16 @@ export function getTranslatedTools(lang: LanguageCode): ToolMeta[] {
       case 'image-compressor':
         return {
           ...tool,
-          title: getTranslation(lang, 'batchImageCompressor', tool.title),
-          navTitle: getTranslation(lang, 'batchImageCompressor', tool.navTitle),
+          title: getTranslation(lang, 'imageCompressorTitle', 'Image Compressor'),
+          navTitle: getTranslation(lang, 'imageCompressorNav', 'Image Compressor'),
           description: getTranslation(lang, 'compressorSubtitle', tool.description),
           category: getTranslation(lang, 'imageTools', tool.category)
         };
       case 'image-converter':
         return {
           ...tool,
-          title: getTranslation(lang, 'imageConverterTitle', tool.title),
-          navTitle: getTranslation(lang, 'imageConverterTitle', tool.navTitle),
+          title: getTranslation(lang, 'imageConverterTitle', 'Image Converter'),
+          navTitle: getTranslation(lang, 'imageConverterNav', 'Image Converter'),
           description: getTranslation(lang, 'converterSubtitle', tool.description),
           category: getTranslation(lang, 'imageTools', tool.category)
         };

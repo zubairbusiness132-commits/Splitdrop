@@ -18,8 +18,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   faqs = [],
   breadcrumbs = []
 }) => {
-  const domain = 'https://splitdrop.com';
-  const fullUrl = `${domain}${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
+  const domain = 'https://zubairbusiness132-commits.github.io/Splitdrop';
+  const cleanPath = canonicalPath === '/' ? '' : (canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`);
+  const fullUrl = `${domain}${cleanPath}`;
 
   useEffect(() => {
     // 1. Title

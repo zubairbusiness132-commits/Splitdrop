@@ -25,6 +25,7 @@ import { AboutPage } from './components/pages/AboutPage';
 import { TOOLS_DATA, HOMEPAGE_FAQS, getTranslatedTools, getTranslatedFaqs } from './data/toolsData';
 import { detectBrowserLanguage, LanguageCode, getTranslation } from './lib/i18n';
 import { LanguageProvider } from './context/LanguageContext';
+import { normalizePath, getLinkUrl } from './lib/paths';
 import { ArrowRight, ChevronDown, CheckCircle2, Shield, Zap, Sparkles } from 'lucide-react';
 
 export default function App() {
@@ -35,16 +36,15 @@ export default function App() {
       const redirectParam = searchParams.get('p');
       if (redirectParam) {
         const cleanPath = '/' + redirectParam.replace(/^\//, '');
-        window.history.replaceState({}, '', window.location.pathname.replace(/\/$/, '') + cleanPath);
-        return cleanPath;
+        const fullUrl = getLinkUrl(cleanPath);
+        window.history.replaceState({}, '', fullUrl);
+        return normalizePath(cleanPath);
       }
     } catch {
       // Ignore URL parsing fallback
     }
 
-    const p = window.location.pathname;
-    const normalized = p.replace(/^\/Splitdrop/i, '');
-    return normalized === '' ? '/' : normalized;
+    return normalizePath(window.location.pathname);
   });
 
   // Language state
@@ -114,15 +114,17 @@ export default function App() {
   // Handle popstate
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
+      setCurrentPath(normalizePath(window.location.pathname));
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const navigateTo = (path: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path);
+    const norm = normalizePath(path);
+    const fullUrl = getLinkUrl(norm);
+    window.history.pushState({}, '', fullUrl);
+    setCurrentPath(norm);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -200,7 +202,7 @@ export default function App() {
                 <BackButton onNavigate={navigateTo} />
                 <Breadcrumb
                   items={[
-                    { label: 'Home', path: '/' },
+                    { label: 'Home', path: getLinkUrl('/') },
                     { label: isPrivacyPage ? getTranslation(currentLang, 'privacy', 'Privacy Policy') : isTermsPage ? getTranslation(currentLang, 'terms', 'Terms') : isDisclaimerPage ? getTranslation(currentLang, 'disclaimer', 'Disclaimer') : isContactPage ? getTranslation(currentLang, 'contact', 'Contact') : getTranslation(currentLang, 'about', 'About') }
                   ]}
                   onNavigate={navigateTo}
@@ -270,7 +272,7 @@ export default function App() {
                     <div
                       key={tool.id}
                       className="glass-card flex flex-col justify-between p-6 rounded-3xl group cursor-pointer"
-                      onClick={() => navigateTo(tool.path)}
+                      onClick={() => navigateTo(getLinkUrl(tool.path))}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-4">
@@ -302,7 +304,7 @@ export default function App() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigateTo(tool.path);
+                            navigateTo(getLinkUrl(tool.path));
                           }}
                           className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 group/btn shadow-md hover:shadow-indigo-500/20"
                         >
@@ -413,7 +415,7 @@ export default function App() {
                 canonicalPath={activeTool.path}
                 toolMeta={activeTool}
                 breadcrumbs={[
-                  { label: 'Home', path: '/' },
+                  { label: 'Home', path: getLinkUrl('/') },
                   { label: activeTool.navTitle }
                 ]}
               />
@@ -423,7 +425,7 @@ export default function App() {
                 <BackButton onNavigate={navigateTo} />
                 <Breadcrumb
                   items={[
-                    { label: 'Home', path: '/' },
+                    { label: 'Home', path: getLinkUrl('/') },
                     { label: activeTool.navTitle }
                   ]}
                   onNavigate={navigateTo}
@@ -487,7 +489,7 @@ export default function App() {
                   {translatedTools.filter(t => t.id !== activeTool.id).slice(0, 3).map(tool => (
                     <button
                       key={tool.id}
-                      onClick={() => navigateTo(tool.path)}
+                      onClick={() => navigateTo(getLinkUrl(tool.path))}
                       className="glass-card p-4 rounded-2xl text-left cursor-pointer group"
                     >
                       <span className="text-2xl mb-2 inline-block">{tool.icon}</span>
