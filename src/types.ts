@@ -15,7 +15,7 @@ export interface ToolMeta {
   icon: string;
   path: string;
   filename: string;
-  category: 'Image Tools' | 'PDF Tools' | 'Generators' | 'Career Tools';
+  category: 'Image Tools' | 'PDF Tools' | 'Generators' | 'Career Tools' | string;
   badge?: string;
   features: string[];
 }

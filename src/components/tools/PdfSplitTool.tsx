@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
-import { Upload, FileText, Scissors, Download, FileArchive } from 'lucide-react';
+import { Upload, FileText, Scissors, FileArchive } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface PdfSplitToolProps {
   onShowToast: (msg: string) => void;
 }
 
 export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
+  const { t } = useLanguage();
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfDoc, setPdfDoc] = useState<PDFDocument | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -67,7 +69,6 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
       const baseName = pdfFile.name.replace(/\.pdf$/i, '');
 
       if (splitMode === 'all') {
-        // Split each page into single PDF
         for (let i = 0; i < pageCount; i++) {
           const newDoc = await PDFDocument.create();
           const [copiedPage] = await newDoc.copyPages(pdfDoc, [i]);
@@ -85,7 +86,6 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
         URL.revokeObjectURL(url);
         onShowToast('Downloaded split PDF pages as ZIP!');
       } else {
-        // Extract selected page range into new single PDF
         const indices = parseRangeIndices(rangeInput, pageCount);
         if (indices.length === 0) {
           onShowToast('Invalid page range entered');
@@ -123,25 +123,25 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-      <div className="text-center max-w-xl mx-auto mb-8">
+    <div className="w-full max-w-4xl mx-auto my-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+      <div className="text-center max-w-xl mx-auto mb-6">
         <span className="text-4xl mb-2 inline-block">✂️</span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          PDF Splitter & Page Extractor
+          {t('pdfSplitTitle', 'PDF Splitter & Page Extractor')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
-          Split PDF documents into individual pages or extract specific page ranges instantly in your browser.
+          {t('pdfSplitSubtitle', 'Split PDF documents into individual pages or extract specific page ranges instantly in your browser.')}
         </p>
       </div>
 
       {!pdfFile ? (
-        <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl hover:border-violet-500 dark:hover:border-violet-500 cursor-pointer bg-gray-50/50 dark:bg-slate-800/30 transition-all text-center mb-6">
+        <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-violet-300/60 dark:border-violet-900/40 rounded-2xl hover:border-violet-500 dark:hover:border-violet-500 cursor-pointer glass-card transition-all text-center">
           <Upload className="w-10 h-10 text-violet-500 mb-2" />
           <span className="text-sm font-bold text-gray-900 dark:text-white">
-            Select PDF file to split
+            {t('selectPdfSplit', 'Select PDF file to split')}
           </span>
           <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-            Choose a single PDF document
+            {t('chooseSinglePdf', 'Choose a single PDF document')}
           </span>
           <input
             type="file"
@@ -152,10 +152,9 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
         </label>
       ) : (
         <div className="space-y-6">
-          {/* File Card */}
-          <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/60">
+          <div className="flex items-center justify-between p-4 rounded-2xl glass-card">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-violet-50 dark:bg-violet-950/40 text-violet-600 rounded-xl">
+              <div className="p-3 bg-violet-50/80 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 rounded-xl shrink-0 shadow-xs">
                 <FileText className="w-6 h-6" />
               </div>
               <div>
@@ -169,14 +168,13 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
             </div>
             <button
               onClick={() => { setPdfFile(null); setPdfDoc(null); }}
-              className="text-xs text-rose-500 hover:underline font-semibold"
+              className="text-xs text-rose-500 hover:underline font-semibold cursor-pointer"
             >
               Choose Different File
             </button>
           </div>
 
-          {/* Split Mode Selector */}
-          <div className="p-5 rounded-2xl bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-slate-300">
               Select Split Method
             </label>
@@ -184,23 +182,23 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setSplitMode('all')}
-                className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
+                className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   splitMode === 'all'
                     ? 'bg-violet-600 text-white border-violet-600 shadow-md'
-                    : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 border-gray-300 dark:border-slate-700'
+                    : 'glass-btn text-gray-700 dark:text-slate-300'
                 }`}
               >
-                Split Every Single Page (ZIP)
+                {t('splitEveryPage', 'Split Every Single Page (ZIP)')}
               </button>
               <button
                 onClick={() => setSplitMode('range')}
-                className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
+                className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   splitMode === 'range'
                     ? 'bg-violet-600 text-white border-violet-600 shadow-md'
-                    : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 border-gray-300 dark:border-slate-700'
+                    : 'glass-btn text-gray-700 dark:text-slate-300'
                 }`}
               >
-                Extract Custom Page Range
+                {t('extractCustomRange', 'Extract Custom Page Range')}
               </button>
             </div>
 
@@ -214,7 +212,7 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
                   value={rangeInput}
                   onChange={(e) => setRangeInput(e.target.value)}
                   placeholder="e.g. 1-3, 5"
-                  className="w-full p-3 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold text-gray-900 dark:text-white"
+                  className="w-full p-3 rounded-xl glass-input text-sm font-bold text-gray-900 dark:text-white"
                 />
               </div>
             )}
@@ -222,14 +220,14 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
             <button
               onClick={handleSplit}
               disabled={isProcessing}
-              className="w-full py-4 bg-violet-600 hover:bg-violet-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-violet-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+              className="w-full py-4 bg-violet-600 hover:bg-violet-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-violet-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-2 cursor-pointer"
             >
               {splitMode === 'all' ? <FileArchive className="w-4 h-4" /> : <Scissors className="w-4 h-4" />}
               {isProcessing
-                ? 'Processing PDF...'
+                ? t('processingPdf', 'Processing PDF...')
                 : splitMode === 'all'
-                ? 'Split All Pages & Download ZIP'
-                : 'Extract Selected Pages'}
+                ? t('splitAllZip', 'Split All Pages & Download ZIP')
+                : t('extractSelected', 'Extract Selected Pages')}
             </button>
           </div>
         </div>

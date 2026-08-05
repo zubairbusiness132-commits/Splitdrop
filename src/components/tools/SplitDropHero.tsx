@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Download, Share2, ArrowRightLeft, Scissors, Layers, RefreshCw, Copy, Check, Eye } from 'lucide-react';
+import { Download, Share2, ArrowRightLeft, Scissors, Layers, RefreshCw, Copy, Check } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SplitDropHeroProps {
   onShowToast: (msg: string) => void;
 }
 
 export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => {
+  const { t } = useLanguage();
+
   // Mode: 'split' | 'combine'
   const [activeTab, setActiveTab] = useState<'split' | 'combine'>('split');
   
@@ -368,7 +371,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
     try {
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       setCopied(true);
-      onShowToast('Copied combined image to clipboard!');
+      onShowToast(t('copiedToClipboard', 'Copied to Clipboard'));
       setTimeout(() => setCopied(false), 2000);
     } catch {
       onShowToast('Clipboard not supported, downloading image...');
@@ -403,10 +406,10 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto my-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all">
+    <div className="w-full max-w-3xl mx-auto my-6 glass-panel rounded-3xl p-5 sm:p-7 shadow-xl transition-all">
       
       {/* Header bar */}
-      <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-800/30">
+      <div className="flex items-center justify-between p-5 border-b border-white/20 dark:border-white/10 rounded-2xl glass-card">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm">
             SD
@@ -416,23 +419,23 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               SplitDrop Tool
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Fast, secure image and PDF processing
+              {t('fastBrowserBased', 'Fast, browser-based, zero installation required')}
             </p>
           </div>
         </div>
         <button
           onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 glass-btn text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold hover:bg-slate-300/50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
         >
-          <RefreshCw className="w-3.5 h-3.5" /> Reset All
+          <RefreshCw className="w-3.5 h-3.5" /> {t('resetAll', 'Reset All')}
         </button>
       </div>
 
-      <div className="p-6 sm:p-8 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6">
         {/* Global Option */}
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm">
+        <div className="flex items-center justify-between p-4 rounded-2xl glass-card text-xs sm:text-sm">
           <span className="text-slate-700 dark:text-slate-300">
-            <strong className="text-slate-900 dark:text-white font-bold">Auto-trim padding:</strong> Ignore empty transparent canvas margin
+            <strong className="text-slate-900 dark:text-white font-bold">{t('autoTrimPadding', 'Auto-trim padding:')}</strong> {t('ignoreEmptyMargin', 'Ignore empty transparent canvas margin')}
           </span>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -441,31 +444,31 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               onChange={(e) => setTrimPadding(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            <div className="w-11 h-6 bg-slate-200/80 peer-focus:outline-none rounded-full peer dark:bg-slate-700/80 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
           </label>
         </div>
 
         {/* Mode Switcher Tabs */}
-        <div className="grid grid-cols-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl font-semibold text-xs sm:text-sm">
+        <div className="grid grid-cols-2 p-1.5 rounded-2xl glass-card font-semibold text-xs sm:text-sm">
           <button
             onClick={() => setActiveTab('split')}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all cursor-pointer ${
               activeTab === 'split'
                 ? 'bg-indigo-600 text-white shadow-sm font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Scissors className="w-4 h-4" /> Split Image
+            <Scissors className="w-4 h-4" /> {t('splitImage', 'Split Image')}
           </button>
           <button
             onClick={() => setActiveTab('combine')}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all cursor-pointer ${
               activeTab === 'combine'
                 ? 'bg-indigo-600 text-white shadow-sm font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Layers className="w-4 h-4" /> Combine Images
+            <Layers className="w-4 h-4" /> {t('combineImages', 'Combine Images')}
           </button>
         </div>
 
@@ -491,22 +494,22 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     }
                   }
                 }}
-                className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-3xl bg-indigo-50/30 dark:bg-indigo-950/20 hover:border-indigo-400 transition-colors cursor-pointer text-center group"
+                className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-indigo-300/60 dark:border-indigo-900/50 rounded-3xl glass-card hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors cursor-pointer text-center group"
               >
-                <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/50 dark:border-white/10">
                   <svg width="32" height="32" fill="none" stroke="#6366F1" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                 </div>
-                <p className="text-base font-bold text-slate-700 dark:text-slate-200">Drop your file here or tap to upload</p>
-                <p className="text-xs text-slate-400 mt-1">Supports PNG, JPG, WebP, GIF, BMP</p>
+                <p className="text-base font-bold text-slate-700 dark:text-slate-200">{t('dropFileHere', 'Drop your file here or tap to upload')}</p>
+                <p className="text-xs text-slate-400 mt-1">{t('supportsFormats', 'Supports PNG, JPG, WebP, GIF, BMP')}</p>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     splitInputRef.current?.click();
                   }}
-                  className="mt-5 px-6 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-semibold shadow-sm text-slate-700 dark:text-slate-200 group-hover:bg-indigo-50"
+                  className="mt-5 px-6 py-2 glass-btn rounded-full text-xs font-semibold shadow-sm text-slate-700 dark:text-slate-200 cursor-pointer"
                 >
-                  Browse Files
+                  {t('browseFiles', 'Browse Files')}
                 </button>
                 <input
                   ref={splitInputRef}
@@ -533,7 +536,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               <>
                 {/* File Info Badge */}
                 {splitFile && (
-                  <div className="flex items-center justify-between p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-xs font-bold text-indigo-900 dark:text-indigo-200">
+                  <div className="flex items-center justify-between p-3 rounded-2xl glass-card text-xs font-bold text-indigo-900 dark:text-indigo-200">
                     <span className="truncate max-w-[240px] sm:max-w-xs">📷 {splitFile.name}</span>
                     <span className="px-2.5 py-0.5 bg-indigo-600 text-white rounded-full text-[11px] shadow-xs">
                       Size: {formatSize(splitFile.size)}
@@ -545,28 +548,28 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setSplitOrientation('v')}
-                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
                       splitOrientation === 'v'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold'
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                        : 'glass-btn text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    Vertical Split
+                    {t('verticalSplit', 'Vertical Split')}
                   </button>
                   <button
                     onClick={() => setSplitOrientation('h')}
-                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
                       splitOrientation === 'h'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold'
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                        : 'glass-btn text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    Horizontal Split
+                    {t('horizontalSplit', 'Horizontal Split')}
                   </button>
                 </div>
 
                 {/* Canvas Preview Container */}
-                <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-2 flex items-center justify-center min-h-[240px]">
+                <div className="relative overflow-hidden rounded-2xl bg-slate-950/90 border border-slate-800 p-2 flex items-center justify-center min-h-[240px]">
                   <canvas
                     ref={splitCanvasRef}
                     onPointerDown={handleSplitPointerDown}
@@ -575,16 +578,16 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     className="max-h-[50vh] w-auto max-w-full cursor-grab active:cursor-grabbing rounded-lg object-contain touch-none"
                   />
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-slate-900/90 backdrop-blur-md rounded-full text-[11px] font-medium text-white border border-slate-700 shadow-lg">
-                    Drag line on canvas to adjust split location
+                    {t('dragLineSplit', 'Drag line on canvas to adjust split location')}
                   </div>
                 </div>
 
                 {/* Slider & Presets */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
-                    <span>Part A</span>
+                    <span>{t('partA', 'Part A')}</span>
                     <span className="text-indigo-600 dark:text-indigo-400 font-bold text-sm">{splitPct}%</span>
-                    <span>Part B</span>
+                    <span>{t('partB', 'Part B')}</span>
                   </div>
                   <input
                     type="range"
@@ -599,7 +602,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                       <button
                         key={pct}
                         onClick={() => setSplitPct(pct)}
-                        className="flex-1 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 transition-colors"
+                        className="flex-1 py-1.5 rounded-lg glass-btn text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600 cursor-pointer"
                       >
                         {pct}%
                       </button>
@@ -611,15 +614,15 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <button
                     onClick={downloadSplitBoth}
-                    className="flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-600/20 transition-all active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-600/20 transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    <Download className="w-4 h-4" /> Download Both Parts
+                    <Download className="w-4 h-4" /> {t('downloadBothParts', 'Download Both Parts')}
                   </button>
                   <button
                     onClick={shareSplitBoth}
-                    className="flex items-center justify-center gap-2 py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm rounded-xl transition-all active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 py-3 px-4 glass-btn text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    <Share2 className="w-4 h-4" /> Share Both Parts
+                    <Share2 className="w-4 h-4" /> {t('shareBothParts', 'Share Both Parts')}
                   </button>
                 </div>
               </>
@@ -636,7 +639,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Image A
+                    {t('imageA', 'Image A')}
                   </span>
                   {fileA && (
                     <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
@@ -644,13 +647,13 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     </span>
                   )}
                 </div>
-                <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-2xl hover:border-indigo-400 cursor-pointer bg-indigo-50/20 dark:bg-indigo-950/10 overflow-hidden text-center p-2 relative">
+                <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-300/60 dark:border-indigo-900/50 rounded-2xl hover:border-indigo-400 cursor-pointer glass-card overflow-hidden text-center p-2 relative">
                   {imgA ? (
                     <img src={imgA.src} alt="Thumb A" className="h-full w-full object-contain" />
                   ) : (
                     <>
                       <span className="text-xl">🅰️</span>
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">Select A</span>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">{t('selectA', 'Select A')}</span>
                     </>
                   )}
                   <input
@@ -681,7 +684,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                   onClick={swapImages}
                   disabled={!imgA && !imgB}
                   title="Swap Image A and Image B"
-                  className="p-3 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all disabled:opacity-40"
+                  className="p-3 rounded-full glass-btn text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition-all disabled:opacity-40 cursor-pointer"
                 >
                   <ArrowRightLeft className="w-4 h-4" />
                 </button>
@@ -691,7 +694,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Image B
+                    {t('imageB', 'Image B')}
                   </span>
                   {fileB && (
                     <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
@@ -699,13 +702,13 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     </span>
                   )}
                 </div>
-                <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-2xl hover:border-indigo-400 cursor-pointer bg-indigo-50/20 dark:bg-indigo-950/10 overflow-hidden text-center p-2 relative">
+                <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-300/60 dark:border-indigo-900/50 rounded-2xl hover:border-indigo-400 cursor-pointer glass-card overflow-hidden text-center p-2 relative">
                   {imgB ? (
                     <img src={imgB.src} alt="Thumb B" className="h-full w-full object-contain" />
                   ) : (
                     <>
                       <span className="text-xl">🅱️</span>
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">Select B</span>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-1">{t('selectB', 'Select B')}</span>
                     </>
                   )}
                   <input
@@ -732,7 +735,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
             </div>
 
             {(fileA || fileB) && (
-              <div className="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-xs font-bold text-indigo-900 dark:text-indigo-200 text-center">
+              <div className="p-3 rounded-2xl glass-card text-xs font-bold text-indigo-900 dark:text-indigo-200 text-center">
                 📊 Total Selected Input File Size: <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{formatSize((fileA?.size || 0) + (fileB?.size || 0))}</strong>
               </div>
             )}
@@ -744,28 +747,28 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setCombineOrientation('v')}
-                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
                       combineOrientation === 'v'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold'
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                        : 'glass-btn text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    Side-by-Side (Left / Right)
+                    {t('sideBySide', 'Side-by-Side (Left / Right)')}
                   </button>
                   <button
                     onClick={() => setCombineOrientation('h')}
-                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                    className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
                       combineOrientation === 'h'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold'
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                        : 'glass-btn text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    Stacked (Top / Bottom)
+                    {t('stackedTopBottom', 'Stacked (Top / Bottom)')}
                   </button>
                 </div>
 
                 {/* Canvas Preview */}
-                <div className="relative overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-2 flex items-center justify-center min-h-[240px]">
+                <div className="relative overflow-hidden rounded-2xl bg-slate-950/90 border border-slate-800 p-2 flex items-center justify-center min-h-[240px]">
                   <canvas
                     ref={combineCanvasRef}
                     onPointerDown={handleCombinePointerDown}
@@ -774,7 +777,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     className="max-h-[50vh] w-auto max-w-full cursor-grab active:cursor-grabbing rounded-lg object-contain touch-none"
                   />
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-slate-900/90 backdrop-blur-md rounded-full text-[11px] font-medium text-white border border-slate-700 shadow-lg">
-                    Drag seam on canvas to adjust ratio
+                    {t('dragSeamRatio', 'Drag seam on canvas to adjust ratio')}
                   </div>
                 </div>
 
@@ -798,7 +801,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                       <button
                         key={pct}
                         onClick={() => setCombinePct(pct)}
-                        className="flex-1 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 transition-colors"
+                        className="flex-1 py-1.5 rounded-lg glass-btn text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600 cursor-pointer"
                       >
                         {pct}%
                       </button>
@@ -810,16 +813,16 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <button
                     onClick={downloadCombinedImage}
-                    className="flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-600/20 transition-all active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-600/20 transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    <Download className="w-4 h-4" /> Save Combined Image
+                    <Download className="w-4 h-4" /> {t('saveCombinedImage', 'Save Combined Image')}
                   </button>
                   <button
                     onClick={copyCombinedToClipboard}
-                    className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold text-xs sm:text-sm rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 py-3 px-4 glass-btn text-slate-900 dark:text-white font-semibold text-xs sm:text-sm rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                    {copied ? 'Copied to Clipboard' : 'Copy to Clipboard'}
+                    {copied ? t('copiedToClipboard', 'Copied to Clipboard') : t('copyToClipboard', 'Copy to Clipboard')}
                   </button>
                 </div>
               </>

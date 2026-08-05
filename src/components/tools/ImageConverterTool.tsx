@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import JSZip from 'jszip';
-import { Upload, Download, RefreshCw, FileArchive, Trash2 } from 'lucide-react';
+import { Upload, Download, FileArchive, Trash2 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface ConvertItem {
   id: string;
@@ -16,6 +17,7 @@ interface ImageConverterToolProps {
 }
 
 export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowToast }) => {
+  const { t } = useLanguage();
   const [items, setItems] = useState<ConvertItem[]>([]);
   const [globalTarget, setGlobalTarget] = useState<'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp'>('image/png');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -129,27 +131,27 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
   const totalOriginalSize = items.reduce((acc, curr) => acc + curr.file.size, 0);
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-      <div className="text-center max-w-xl mx-auto mb-8">
+    <div className="w-full max-w-4xl mx-auto my-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+      <div className="text-center max-w-xl mx-auto mb-6">
         <span className="text-4xl mb-2 inline-block">🔄</span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          Image Format Converter
+          {t('imageConverterTitle', 'Image Format Converter')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
-          Convert PNG, JPG, WebP, GIF, and BMP files in batch mode. Fast, private, lossless quality output.
+          {t('converterSubtitle', 'Convert PNG, JPG, WebP, GIF, and BMP files in batch mode. Fast, private, lossless quality output.')}
         </p>
       </div>
 
-      <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer bg-gray-50/50 dark:bg-slate-800/30 transition-all text-center mb-6">
+      <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-amber-300/60 dark:border-amber-900/40 rounded-2xl hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer glass-card transition-all text-center">
         <Upload className="w-10 h-10 text-amber-500 mb-2" />
         <span className="text-sm font-bold text-gray-900 dark:text-white">
-          Drop image files here to convert
+          {t('dropImagesConvert', 'Drop image files here to convert')}
         </span>
         <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-          Supports PNG, JPG, WebP, BMP, GIF
+          {t('supportsFormats', 'Supports PNG, JPG, WebP, BMP, GIF')}
         </span>
         {items.length > 0 && (
-          <div className="mt-3 px-3 py-1 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs">
+          <div className="mt-3 px-3 py-1 bg-amber-100/80 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs border border-amber-200/50 dark:border-amber-800/50">
             📊 {items.length} file(s) selected • Total Size: {formatSize(totalOriginalSize)}
           </div>
         )}
@@ -163,15 +165,15 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
       </label>
 
       {items.length > 0 && (
-        <div className="p-5 mb-6 rounded-2xl bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl glass-card flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="text-xs font-bold text-gray-700 dark:text-slate-300 uppercase">
-              Convert All To:
+              {t('convertAllTo', 'Convert All To:')}
             </span>
             <select
               value={globalTarget}
               onChange={(e) => setGlobalTarget(e.target.value as any)}
-              className="p-2.5 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-gray-800 dark:text-slate-200"
+              className="p-2.5 rounded-xl glass-input text-xs font-bold text-gray-800 dark:text-slate-200 cursor-pointer"
             >
               <option value="image/png">PNG (.png)</option>
               <option value="image/jpeg">JPG / JPEG (.jpg)</option>
@@ -184,16 +186,16 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
             <button
               onClick={convertAll}
               disabled={isProcessing}
-              className="flex-1 sm:flex-initial py-2.5 px-5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all disabled:opacity-50"
+              className="flex-1 sm:flex-initial py-2.5 px-5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md shadow-amber-500/20 transition-all disabled:opacity-50 cursor-pointer"
             >
-              {isProcessing ? 'Converting...' : 'Convert Images'}
+              {isProcessing ? t('processing', 'Converting...') : t('convertImages', 'Convert Images')}
             </button>
             <button
               onClick={downloadAllZip}
               disabled={!items.some(i => i.convertedBlob)}
-              className="py-2.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all disabled:opacity-40 flex items-center gap-2"
+              className="py-2.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all disabled:opacity-40 flex items-center gap-2 cursor-pointer"
             >
-              <FileArchive className="w-4 h-4" /> Download ZIP
+              <FileArchive className="w-4 h-4" /> {t('downloadAllZip', 'Download ZIP')}
             </button>
           </div>
         </div>
@@ -204,12 +206,12 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
           {items.map(item => (
             <div
               key={item.id}
-              className="flex items-center gap-4 p-3.5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/40"
+              className="flex items-center gap-4 p-3.5 rounded-2xl glass-card"
             >
               <img
                 src={item.previewUrl}
                 alt={item.file.name}
-                className="w-12 h-12 object-cover rounded-xl bg-gray-200 dark:bg-slate-700"
+                className="w-12 h-12 object-cover rounded-xl bg-gray-200 dark:bg-slate-700 border border-white/40 dark:border-white/10"
               />
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate">
@@ -236,7 +238,7 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
-                  className="p-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors"
+                  className="p-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors shadow-xs cursor-pointer"
                   title="Download"
                 >
                   <Download className="w-4 h-4" />
@@ -244,7 +246,7 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
               ) : (
                 <button
                   onClick={() => setItems(prev => prev.filter(i => i.id !== item.id))}
-                  className="p-2.5 text-gray-400 hover:text-rose-500 rounded-xl transition-colors"
+                  className="p-2.5 text-gray-400 hover:text-rose-500 rounded-xl transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

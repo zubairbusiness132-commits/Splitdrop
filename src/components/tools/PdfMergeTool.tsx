@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { Upload, FileText, ArrowUp, ArrowDown, Trash2, Download, Layers } from 'lucide-react';
+import { Upload, FileText, ArrowUp, ArrowDown, Trash2, Layers } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface PdfItem {
   id: string;
@@ -14,6 +15,7 @@ interface PdfMergeToolProps {
 }
 
 export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
+  const { t } = useLanguage();
   const [items, setItems] = useState<PdfItem[]>([]);
   const [isMerging, setIsMerging] = useState(false);
 
@@ -103,27 +105,27 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
   const totalSize = items.reduce((acc, curr) => acc + curr.file.size, 0);
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-      <div className="text-center max-w-xl mx-auto mb-8">
+    <div className="w-full max-w-4xl mx-auto my-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+      <div className="text-center max-w-xl mx-auto mb-6">
         <span className="text-4xl mb-2 inline-block">🧩</span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          PDF Merge Tool
+          {t('pdfMergeTitle', 'PDF Merge Tool')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
-          Combine multiple PDF files into one clean document. Drag to reorder, view page counts, and download instantly.
+          {t('pdfMergeSubtitle', 'Combine multiple PDF files into one clean document. Drag to reorder, view page counts, and download instantly.')}
         </p>
       </div>
 
-      <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer bg-gray-50/50 dark:bg-slate-800/30 transition-all text-center mb-6">
+      <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-indigo-300/60 dark:border-indigo-900/40 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer glass-card transition-all text-center">
         <Upload className="w-10 h-10 text-indigo-500 mb-2" />
         <span className="text-sm font-bold text-gray-900 dark:text-white">
-          Select PDF files to combine
+          {t('selectPdfCombine', 'Select PDF files to combine')}
         </span>
         <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-          Supports multiple PDF documents
+          {t('supportsMultiplePdfs', 'Supports multiple PDF documents')}
         </span>
         {items.length > 0 && (
-          <div className="mt-3 px-3 py-1 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs">
+          <div className="mt-3 px-3 py-1 bg-indigo-100/80 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs border border-indigo-200/50 dark:border-indigo-800/50">
             📊 {items.length} PDF(s) selected • Total Size: {formatSize(totalSize)} ({totalPages} pages)
           </div>
         )}
@@ -142,8 +144,8 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
             <span className="text-xs font-bold text-gray-500 uppercase">
               {items.length} Files Selected ({totalPages} Pages) • Total Size: <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{formatSize(totalSize)}</strong>
             </span>
-            <button onClick={() => setItems([])} className="text-xs text-rose-500 hover:underline">
-              Clear List
+            <button onClick={() => setItems([])} className="text-xs text-rose-500 hover:underline cursor-pointer">
+              {t('clearList', 'Clear List')}
             </button>
           </div>
 
@@ -151,9 +153,9 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
             {items.map((item, index) => (
               <div
                 key={item.id}
-                className="flex items-center gap-3 p-3.5 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/40"
+                className="flex items-center gap-3 p-3.5 rounded-2xl glass-card"
               >
-                <div className="p-2.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 rounded-xl">
+                <div className="p-2.5 bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0 shadow-xs">
                   <FileText className="w-5 h-5" />
                 </div>
 
@@ -170,20 +172,20 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
                   <button
                     onClick={() => moveItem(index, 'up')}
                     disabled={index === 0}
-                    className="p-1.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg disabled:opacity-30"
+                    className="p-1.5 text-gray-500 hover:bg-gray-200/50 dark:hover:bg-slate-700/50 rounded-lg disabled:opacity-30 cursor-pointer"
                   >
                     <ArrowUp className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => moveItem(index, 'down')}
                     disabled={index === items.length - 1}
-                    className="p-1.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg disabled:opacity-30"
+                    className="p-1.5 text-gray-500 hover:bg-gray-200/50 dark:hover:bg-slate-700/50 rounded-lg disabled:opacity-30 cursor-pointer"
                   >
                     <ArrowDown className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg"
+                    className="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -195,10 +197,10 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
           <button
             onClick={mergePdfs}
             disabled={isMerging || items.length < 2}
-            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-4"
+            className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             <Layers className="w-4 h-4" />
-            {isMerging ? 'Merging PDF Documents...' : `Merge ${items.length} PDFs into One`}
+            {isMerging ? t('mergingPdfs', 'Merging PDF Documents...') : `${t('mergePdfsButton', 'Merge PDFs into One')}`}
           </button>
         </div>
       )}

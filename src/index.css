@@ -1,5 +1,183 @@
 @import "tailwindcss";
 
+@layer utilities {
+  /* Premium Glassmorphism Panels */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .dark .glass-panel {
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  /* Interactive Glass Card with smooth hover lift & inner border glow */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.04),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, box-shadow;
+  }
+
+  .dark .glass-card {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, box-shadow;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 16px 36px -8px rgba(79, 70, 229, 0.12),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  .dark .glass-card:hover {
+    transform: translateY(-3px);
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(129, 140, 248, 0.35);
+    box-shadow: 0 16px 36px -8px rgba(99, 102, 241, 0.25),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  /* Glass Button */
+  .glass-btn {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .dark .glass-btn {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .glass-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+  }
+
+  .dark .glass-btn:hover {
+    background: rgba(51, 65, 85, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  }
+
+  /* Glass Inputs */
+  .glass-input {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(203, 213, 225, 0.8);
+  }
+
+  .dark .glass-input {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(51, 65, 85, 0.8);
+  }
+}
+
+/* Ambient floating organic glowing circles */
+@keyframes glass-orb-float-1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(35px, -25px) scale(1.08); }
+}
+
+@keyframes glass-orb-float-2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-30px, 30px) scale(0.92); }
+}
+
+.animate-glass-orb-1 {
+  animation: glass-orb-float-1 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-glass-orb-2 {
+  animation: glass-orb-float-2 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* GPU-Accelerated Infinite Marquee Ticker Animations */
+@keyframes ticker-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes ticker-marquee-reverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-ticker-marquee {
+  display: flex;
+  width: max-content;
+  animation: ticker-marquee 38s linear infinite;
+  will-change: transform;
+  contain: layout style;
+}
+
+.animate-ticker-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: ticker-marquee-reverse 42s linear infinite;
+  will-change: transform;
+  contain: layout style;
+}
+
+/* Pause marquee on hover for desktop devices */
+@media (hover: hover) {
+  .ticker-container:hover .animate-ticker-marquee,
+  .ticker-container:hover .animate-ticker-marquee-reverse {
+    animation-play-state: paused;
+  }
+}
+
+/* Respect user accessibility reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker-marquee,
+  .animate-ticker-marquee-reverse {
+    animation-duration: 120s;
+  }
+}
+
 @media print {
   /* Hide all elements by default */
   body * {
@@ -37,6 +215,8 @@
     border: none !important;
     background: #ffffff !important;
     color: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -46,3 +226,4 @@
     margin: 0;
   }
 }
+

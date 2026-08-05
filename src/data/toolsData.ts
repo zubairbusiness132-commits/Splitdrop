@@ -1,4 +1,5 @@
 import { ToolMeta, FAQItem } from '../types';
+import { LanguageCode, getTranslation } from '../lib/i18n';
 
 export const TOOLS_DATA: ToolMeta[] = [
   {
@@ -87,6 +88,71 @@ export const TOOLS_DATA: ToolMeta[] = [
   }
 ];
 
+export function getTranslatedTools(lang: LanguageCode): ToolMeta[] {
+  return TOOLS_DATA.map(tool => {
+    switch (tool.id) {
+      case 'splitdrop':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'splitAndCombine', tool.title),
+          navTitle: 'SplitDrop',
+          description: getTranslation(lang, 'heroSubtitle', tool.description),
+          category: getTranslation(lang, 'imageTools', tool.category)
+        };
+      case 'image-compressor':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'batchImageCompressor', tool.title),
+          navTitle: getTranslation(lang, 'batchImageCompressor', tool.navTitle),
+          description: getTranslation(lang, 'compressorSubtitle', tool.description),
+          category: getTranslation(lang, 'imageTools', tool.category)
+        };
+      case 'image-converter':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'imageConverterTitle', tool.title),
+          navTitle: getTranslation(lang, 'imageConverterTitle', tool.navTitle),
+          description: getTranslation(lang, 'converterSubtitle', tool.description),
+          category: getTranslation(lang, 'imageTools', tool.category)
+        };
+      case 'pdf-merge':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'pdfMergeTitle', tool.title),
+          navTitle: getTranslation(lang, 'pdfMergeTitle', tool.navTitle),
+          description: getTranslation(lang, 'pdfMergeSubtitle', tool.description),
+          category: getTranslation(lang, 'pdfAndUtilities', tool.category)
+        };
+      case 'pdf-split':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'pdfSplitTitle', tool.title),
+          navTitle: getTranslation(lang, 'pdfSplitTitle', tool.navTitle),
+          description: getTranslation(lang, 'pdfSplitSubtitle', tool.description),
+          category: getTranslation(lang, 'pdfAndUtilities', tool.category)
+        };
+      case 'qr-generator':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'qrTitle', tool.title),
+          navTitle: getTranslation(lang, 'qrTitle', tool.navTitle),
+          description: getTranslation(lang, 'qrSubtitle', tool.description),
+          category: getTranslation(lang, 'pdfAndUtilities', tool.category)
+        };
+      case 'resume-builder':
+        return {
+          ...tool,
+          title: getTranslation(lang, 'resumeBuilderTitle', tool.title),
+          navTitle: getTranslation(lang, 'resumeBuilderTitle', tool.navTitle),
+          description: getTranslation(lang, 'resumeSubtitle', tool.description),
+          category: getTranslation(lang, 'pdfAndUtilities', tool.category)
+        };
+      default:
+        return tool;
+    }
+  });
+}
+
 export const HOMEPAGE_FAQS: FAQItem[] = [
   {
     question: "What is SplitDrop and how does image splitting work?",
@@ -109,3 +175,28 @@ export const HOMEPAGE_FAQS: FAQItem[] = [
     answer: "SplitDrop supports all major Web image formats including PNG, JPG, JPEG, WebP, GIF, and BMP."
   }
 ];
+
+export function getTranslatedFaqs(lang: LanguageCode): FAQItem[] {
+  return [
+    {
+      question: getTranslation(lang, 'faqsTitle', HOMEPAGE_FAQS[0].question),
+      answer: getTranslation(lang, 'heroSubtitle', HOMEPAGE_FAQS[0].answer)
+    },
+    {
+      question: getTranslation(lang, 'zeroServerUploads', HOMEPAGE_FAQS[1].question),
+      answer: getTranslation(lang, 'zeroServerUploadsDesc', HOMEPAGE_FAQS[1].answer)
+    },
+    {
+      question: getTranslation(lang, 'freeForever', HOMEPAGE_FAQS[2].question),
+      answer: getTranslation(lang, 'freeForeverDesc', HOMEPAGE_FAQS[2].answer)
+    },
+    {
+      question: getTranslation(lang, 'fastBrowserBased', HOMEPAGE_FAQS[3].question),
+      answer: getTranslation(lang, 'instantSpeedDesc', HOMEPAGE_FAQS[3].answer)
+    },
+    {
+      question: getTranslation(lang, 'supportsFormats', HOMEPAGE_FAQS[4].question),
+      answer: getTranslation(lang, 'supportsFormats', HOMEPAGE_FAQS[4].answer)
+    }
+  ];
+}

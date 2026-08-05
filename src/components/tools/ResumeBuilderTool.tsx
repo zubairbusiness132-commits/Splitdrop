@@ -11,7 +11,6 @@ import {
   FileCode, 
   FileJson, 
   Check, 
-  Sparkles,
   Eye,
   Edit3,
   Languages,
@@ -19,8 +18,8 @@ import {
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { useLanguage } from '../../context/LanguageContext';
 
-// Helper to sanitize oklch color strings so html2canvas color parser doesn't crash
 let canvasHelper: HTMLCanvasElement | null = null;
 let ctxHelper: CanvasRenderingContext2D | null = null;
 
@@ -56,7 +55,6 @@ function replaceOklchInCss(cssText: string): string {
 }
 
 function sanitizeOklchInDocument(clonedDoc: Document) {
-  // 1. Sanitize all <style> tags
   const styleTags = Array.from(clonedDoc.querySelectorAll('style'));
   styleTags.forEach(style => {
     if (style.textContent && style.textContent.includes('oklch')) {
@@ -64,7 +62,6 @@ function sanitizeOklchInDocument(clonedDoc: Document) {
     }
   });
 
-  // 2. Sanitize style rules in stylesheets
   try {
     Array.from(clonedDoc.styleSheets).forEach(sheet => {
       try {
@@ -77,14 +74,13 @@ function sanitizeOklchInDocument(clonedDoc: Document) {
           });
         }
       } catch {
-        // Cross-origin stylesheet protection
+        // Protection
       }
     });
   } catch {
     // Ignore
   }
 
-  // 3. Sanitize inline style attributes on all elements
   const allElements = Array.from(clonedDoc.querySelectorAll('*')) as HTMLElement[];
   allElements.forEach(el => {
     const styleAttr = el.getAttribute('style');
@@ -99,7 +95,8 @@ interface ResumeBuilderToolProps {
 }
 
 export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToast }) => {
-  // Saved resumes state from localStorage (defaults to EMPTY_RESUME_DATA for a clean state on first load)
+  const { t } = useLanguage();
+
   const [savedResumes, setSavedResumes] = useState<ResumeData[]>(() => {
     try {
       const stored = localStorage.getItem('splitdrop_resumes');
@@ -114,20 +111,14 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
   });
 
   const [activeResumeId, setActiveResumeId] = useState<string>(() => savedResumes[0].id);
-
-  // Active resume object
   const activeResume = savedResumes.find(r => r.id === activeResumeId) || savedResumes[0];
 
-  // Undo / Redo history stacks
   const [history, setHistory] = useState<ResumeData[]>([]);
   const [future, setFuture] = useState<ResumeData[]>([]);
 
-  // Mobile View Toggle: 'editor' | 'preview'
   const [mobileView, setMobileView] = useState<'editor' | 'preview'>('editor');
-
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Auto-save active resume to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('splitdrop_resumes', JSON.stringify(savedResumes));
@@ -136,14 +127,12 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     }
   }, [savedResumes]);
 
-  // Update active resume & save to history
   const handleDataChange = (newData: ResumeData) => {
     setHistory(prev => [...prev.slice(-20), activeResume]);
     setFuture([]);
     setSavedResumes(prev => prev.map(r => r.id === activeResume.id ? { ...newData, updatedAt: Date.now() } : r));
   };
 
-  // Load sample resume for demo purposes
   const handleLoadSampleResume = () => {
     const sample: ResumeData = {
       ...SAMPLE_RESUME_DATA,
@@ -155,7 +144,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Loaded sample resume data!');
   };
 
-  // Undo Handler
   const handleUndo = () => {
     if (history.length === 0) return;
     const previous = history[history.length - 1];
@@ -164,7 +152,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     setSavedResumes(prev => prev.map(r => r.id === previous.id ? previous : r));
   };
 
-  // Redo Handler
   const handleRedo = () => {
     if (future.length === 0) return;
     const next = future[0];
@@ -173,7 +160,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     setSavedResumes(prev => prev.map(r => r.id === next.id ? next : r));
   };
 
-  // Create new resume
   const handleCreateNewResume = () => {
     const newRes: ResumeData = {
       ...EMPTY_RESUME_DATA,
@@ -186,7 +172,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Created new empty resume');
   };
 
-  // Duplicate resume
   const handleDuplicateResume = (id: string) => {
     const target = savedResumes.find(r => r.id === id);
     if (!target) return;
@@ -201,7 +186,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Duplicated resume!');
   };
 
-  // Delete resume
   const handleDeleteResume = (id: string) => {
     if (savedResumes.length <= 1) return;
     const filtered = savedResumes.filter(r => r.id !== id);
@@ -210,9 +194,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Deleted resume');
   };
 
-  // Export ONLY the resume preview as a downloadable PDF using html2canvas + jsPDF
   const handleDownloadPDF = async () => {
-    // Capture target element (.resume-preview or previewRef.current)
     const element = previewRef.current || (document.querySelector('.resume-preview') as HTMLElement) || (document.getElementById('resume-preview-sheet') as HTMLElement);
 
     if (!element) {
@@ -223,7 +205,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Generating downloadable PDF...');
 
     try {
-      // Wait for any images (profile photo, QR code, icons) inside the preview sheet to finish loading
       const imgElements = Array.from(element.querySelectorAll('img'));
       await Promise.all(
         imgElements.map(
@@ -239,7 +220,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         )
       );
 
-      // Helper function to build & trigger multi-page PDF download from rendered canvas
       const exportPdfFromCanvas = (canvas: HTMLCanvasElement) => {
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
         const isLetter = activeResume.styling.paperSize === 'Letter';
@@ -262,11 +242,9 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         let heightLeft = calculatedImgHeight;
         let position = 0;
 
-        // Page 1
         pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
         heightLeft -= pdfHeight;
 
-        // Multi-page slicing if content exceeds single page height
         while (heightLeft > 1) {
           position -= pdfHeight;
           pdf.addPage(paperFormat, 'portrait');
@@ -278,11 +256,9 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         const cleanName = rawName ? rawName.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'My';
         const fileName = `${cleanName}_Resume.pdf`;
 
-        // Safe download execution with Blob fallback for mobile webviews (Android Chrome, Safari, Samsung Internet, Firefox)
         try {
           pdf.save(fileName);
         } catch (saveError) {
-          console.warn('pdf.save failed, executing blob fallback:', saveError);
           const blob = pdf.output('blob');
           const blobUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
@@ -296,28 +272,23 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         }
       };
 
-      // Render the element using html2canvas
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        allowTaint: false, // Critical: MUST be false so canvas.toDataURL() never throws SecurityError
+        allowTaint: false,
         logging: false,
         backgroundColor: '#FFFFFF',
         scrollX: 0,
         scrollY: 0,
         windowWidth: 1200,
         onclone: clonedDoc => {
-          // Sanitize oklch colors across cloned document before html2canvas parses CSS rules
           sanitizeOklchInDocument(clonedDoc);
-
-          // Remove dark mode class from cloned document so paper background and text contrast stay clean
           clonedDoc.documentElement.classList.remove('dark');
           if (clonedDoc.body) {
             clonedDoc.body.classList.remove('dark');
           }
           const clonedSheet = (clonedDoc.querySelector('.resume-preview') as HTMLElement) || clonedDoc.getElementById('resume-preview-sheet');
           if (clonedSheet) {
-            // Unhide parent chain in cloned document in case mobile view hid the preview panel
             let parent: HTMLElement | null = clonedSheet;
             while (parent && parent !== clonedDoc.body) {
               parent.style.display = 'block';
@@ -340,93 +311,14 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
       onShowToast('PDF downloaded successfully!');
     } catch (err) {
       console.error('PDF export error:', err);
-
-      // Fallback strategy: retry with standard scale 1 if canvas creation was memory constrained
-      try {
-        const fallbackCanvas = await html2canvas(element, {
-          scale: 1,
-          useCORS: true,
-          allowTaint: false,
-          backgroundColor: '#FFFFFF',
-          logging: false,
-          onclone: clonedDoc => {
-            sanitizeOklchInDocument(clonedDoc);
-            clonedDoc.documentElement.classList.remove('dark');
-            if (clonedDoc.body) clonedDoc.body.classList.remove('dark');
-            const clonedSheet = (clonedDoc.querySelector('.resume-preview') as HTMLElement) || clonedDoc.getElementById('resume-preview-sheet');
-            if (clonedSheet) {
-              let parent: HTMLElement | null = clonedSheet;
-              while (parent && parent !== clonedDoc.body) {
-                parent.style.display = 'block';
-                parent.style.visibility = 'visible';
-                parent.style.opacity = '1';
-                parent = parent.parentElement;
-              }
-              clonedSheet.style.boxShadow = 'none';
-              clonedSheet.style.margin = '0';
-            }
-          }
-        });
-
-        const imgData = fallbackCanvas.toDataURL('image/jpeg', 0.95);
-        const isLetter = activeResume.styling.paperSize === 'Letter';
-        const paperFormat = isLetter ? 'letter' : 'a4';
-
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: paperFormat
-        });
-
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const ratio = pdfWidth / fallbackCanvas.width;
-        const calculatedImgHeight = fallbackCanvas.height * ratio;
-
-        let heightLeft = calculatedImgHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
-        heightLeft -= pdfHeight;
-
-        while (heightLeft > 1) {
-          position -= pdfHeight;
-          pdf.addPage(paperFormat, 'portrait');
-          pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
-          heightLeft -= pdfHeight;
-        }
-
-        const rawName = activeResume.personalInfo.fullName?.trim();
-        const cleanName = rawName ? rawName.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'My';
-        const fileName = `${cleanName}_Resume.pdf`;
-
-        try {
-          pdf.save(fileName);
-        } catch {
-          const blob = pdf.output('blob');
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = fileName;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-
-        onShowToast('PDF downloaded successfully!');
-      } catch (fallbackErr) {
-        console.error('Fallback PDF generation failed:', fallbackErr);
-        onShowToast('PDF generation failed. Please try again.');
-      }
+      onShowToast('PDF generation failed. Please try again.');
     }
   };
 
-  // Print Resume
   const handlePrint = () => {
     window.print();
   };
 
-  // Download HTML
   const handleDownloadHTML = () => {
     if (!previewRef.current) return;
     const htmlContent = `<!DOCTYPE html>
@@ -456,7 +348,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('HTML file exported!');
   };
 
-  // Export JSON
   const handleExportJSON = () => {
     const jsonStr = JSON.stringify(activeResume, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -469,7 +360,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     onShowToast('Exported Resume JSON!');
   };
 
-  // Import JSON
   const handleImportJSON = (jsonStr: string) => {
     try {
       const parsed = JSON.parse(jsonStr);
@@ -488,7 +378,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
     }
   };
 
-  // Language change
   const handleLanguageChange = (lang: ResumeLanguage) => {
     handleDataChange({
       ...activeResume,
@@ -498,10 +387,10 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
+    <div className="w-full max-w-7xl mx-auto my-6 p-4 sm:p-6 space-y-6">
       
       {/* TOP TOOLBAR HEADER */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl glass-panel shadow-sm">
         
         {/* Title & Saved Status */}
         <div className="flex items-center gap-3">
@@ -526,8 +415,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         {/* Toolbar Action Buttons */}
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
           
-          {/* Layout Settings Preset Toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
+          <div className="flex items-center gap-1 glass-card p-1 rounded-xl text-xs font-semibold">
             <span className="text-[10px] font-extrabold uppercase text-slate-400 dark:text-slate-500 pl-1 pr-0.5">Layout</span>
             <button
               onClick={() => {
@@ -543,7 +431,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
                 });
                 onShowToast('Switched to Modern layout & font preset');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 (activeResume.styling.layoutPreset || 'modern') === 'modern'
                   ? 'bg-indigo-600 text-white font-bold shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -565,7 +453,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
                 });
                 onShowToast('Switched to Classic layout & font preset');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 activeResume.styling.layoutPreset === 'classic'
                   ? 'bg-indigo-600 text-white font-bold shadow-xs font-serif'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-serif'
@@ -575,8 +463,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
             </button>
           </div>
 
-          {/* Multi-Language Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-slate-700/80 hover:border-indigo-400 transition-colors">
+          <div className="flex items-center gap-1.5 glass-card px-2 py-1 rounded-xl text-xs font-semibold hover:border-indigo-400 transition-colors">
             <Languages className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
             <select
               value={activeResume.language || 'en'}
@@ -594,12 +481,11 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
             </select>
           </div>
 
-          {/* Undo / Redo */}
           <div className="flex items-center gap-1">
             <button
               onClick={handleUndo}
               disabled={history.length === 0}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 text-slate-700 dark:text-slate-200"
+              className="p-2 rounded-xl glass-btn disabled:opacity-30 text-slate-700 dark:text-slate-200 cursor-pointer"
               title="Undo"
             >
               <RotateCcw className="w-4 h-4" />
@@ -607,42 +493,39 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
             <button
               onClick={handleRedo}
               disabled={future.length === 0}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 text-slate-700 dark:text-slate-200"
+              className="p-2 rounded-xl glass-btn disabled:opacity-30 text-slate-700 dark:text-slate-200 cursor-pointer"
               title="Redo"
             >
               <RotateCw className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Load Sample Resume Button */}
           <button
             onClick={handleLoadSampleResume}
-            className="px-3 py-2 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors border border-indigo-200 dark:border-indigo-800"
+            className="px-3 py-2 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors border border-indigo-200/60 dark:border-indigo-800/60 cursor-pointer"
             title="Load Sample Resume for Demo"
           >
             <FileText className="w-4 h-4 text-indigo-600" /> Load Sample
           </button>
 
-          {/* Download PDF & Print */}
           <button
             onClick={handleDownloadPDF}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Download className="w-4 h-4" /> Download PDF
           </button>
 
           <button
             onClick={handlePrint}
-            className="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-colors"
+            className="px-3 py-2 glass-btn text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Print Resume"
           >
             <Printer className="w-4 h-4" /> Print
           </button>
 
-          {/* HTML & JSON Exports */}
           <button
             onClick={handleDownloadHTML}
-            className="hidden sm:flex items-center gap-1 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl"
+            className="hidden sm:flex items-center gap-1 px-3 py-2 glass-btn text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl cursor-pointer"
             title="Download HTML"
           >
             <FileCode className="w-4 h-4" /> HTML
@@ -650,7 +533,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
 
           <button
             onClick={handleExportJSON}
-            className="hidden sm:flex items-center gap-1 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl"
+            className="hidden sm:flex items-center gap-1 px-3 py-2 glass-btn text-slate-800 dark:text-slate-200 font-semibold text-xs rounded-xl cursor-pointer"
             title="Export JSON"
           >
             <FileJson className="w-4 h-4" /> JSON
@@ -658,7 +541,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         </div>
       </div>
 
-      {/* MOBILE TOGGLE SWITCH (Editor / Live Preview) */}
       <div className="lg:hidden flex rounded-xl bg-slate-200 dark:bg-slate-800 p-1 font-semibold text-xs">
         <button
           onClick={() => setMobileView('editor')}
@@ -678,10 +560,7 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
         </button>
       </div>
 
-      {/* MAIN TWO-COLUMN SPLIT PANEL */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[700px]">
-        
-        {/* LEFT PANEL: RESUME EDITOR */}
         <div className={`lg:col-span-5 h-[750px] ${mobileView === 'editor' ? 'block' : 'hidden lg:block'}`}>
           <ResumeEditor
             data={activeResume}
@@ -697,7 +576,6 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
           />
         </div>
 
-        {/* RIGHT PANEL: LIVE RESUME PREVIEW */}
         <div className={`lg:col-span-7 h-[750px] overflow-y-auto ${mobileView === 'preview' ? 'block' : 'hidden lg:block'}`}>
           <ResumePreview
             data={activeResume}
