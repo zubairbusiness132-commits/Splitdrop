@@ -43,8 +43,66 @@ export const ATS_CHECKLIST_ITEMS = [
   { id: 'quantifiable', title: 'Quantifiable Results', tip: 'Include numbers, percentages, and revenue impact.' }
 ];
 
-export const DEFAULT_RESUME_DATA: Omit<ResumeData, 'id' | 'updatedAt'> = {
+export const EMPTY_RESUME_DATA: Omit<ResumeData, 'id' | 'updatedAt'> = {
   name: 'My Professional Resume',
+  language: 'en',
+  personalInfo: {
+    fullName: '',
+    jobTitle: '',
+    email: '',
+    phone: '',
+    address: '',
+    website: '',
+    linkedIn: '',
+    gitHub: '',
+    portfolio: '',
+    photoUrl: '',
+    summary: '',
+    objective: ''
+  },
+  experience: [],
+  education: [],
+  projects: [],
+  skills: [],
+  languages: [],
+  certifications: [],
+  achievements: [],
+  awards: [],
+  internships: [],
+  references: [],
+  hobbies: [],
+  customSections: [],
+  sectionOrder: [
+    'summary',
+    'experience',
+    'education',
+    'skills',
+    'projects',
+    'languages',
+    'certifications'
+  ],
+  styling: {
+    primaryColor: '#4F46E5',
+    secondaryColor: '#1E293B',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 'medium',
+    lineHeight: 'normal',
+    marginSize: 'normal',
+    paperSize: 'A4',
+    photoShape: 'hidden',
+    layout: 'one-column',
+    templateStyle: 'modern'
+  },
+  qrCode: {
+    enabled: true,
+    type: 'portfolio',
+    url: '',
+    label: 'Scan Profile'
+  }
+};
+
+export const DEFAULT_RESUME_DATA: Omit<ResumeData, 'id' | 'updatedAt'> = {
+  name: 'Sample Resume (Alex Morgan)',
   language: 'en',
   personalInfo: {
     fullName: 'Alex Morgan',
@@ -195,6 +253,8 @@ export const DEFAULT_RESUME_DATA: Omit<ResumeData, 'id' | 'updatedAt'> = {
     label: 'Scan for Portfolio'
   }
 };
+
+export const SAMPLE_RESUME_DATA = DEFAULT_RESUME_DATA;
 
 export const SAMPLE_ROLE_TEMPLATES: RoleSampleTemplate[] = [
   {

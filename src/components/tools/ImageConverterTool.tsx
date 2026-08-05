@@ -118,6 +118,16 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
     onShowToast('Downloaded converted ZIP!');
   };
 
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
+  const totalOriginalSize = items.reduce((acc, curr) => acc + curr.file.size, 0);
+
   return (
     <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
       <div className="text-center max-w-xl mx-auto mb-8">
@@ -138,6 +148,11 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
         <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
           Supports PNG, JPG, WebP, BMP, GIF
         </span>
+        {items.length > 0 && (
+          <div className="mt-3 px-3 py-1 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs">
+            📊 {items.length} file(s) selected • Total Size: {formatSize(totalOriginalSize)}
+          </div>
+        )}
         <input
           type="file"
           multiple
@@ -201,7 +216,7 @@ export const ImageConverterTool: React.FC<ImageConverterToolProps> = ({ onShowTo
                   {item.file.name}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-                  Target: {globalTarget.replace('image/', '').toUpperCase()}
+                  Size: <strong className="text-gray-700 dark:text-slate-300 font-semibold">{formatSize(item.file.size)}</strong> • Target: {globalTarget.replace('image/', '').toUpperCase()}
                 </p>
               </div>
 

@@ -1,7 +1,7 @@
 export type PaperSize = 'A4' | 'Letter';
 export type PhotoShape = 'round' | 'square' | 'hidden';
 export type LayoutType = 'one-column' | 'two-column' | 'sidebar';
-export type ResumeLanguage = 'en' | 'hi' | 'ur' | 'ar';
+export type ResumeLanguage = 'en' | 'es' | 'fr' | 'de' | 'hi' | 'ur' | 'ar' | 'zh';
 
 export interface PersonalInfo {
   fullName: string;
@@ -132,6 +132,7 @@ export interface ResumeStyling {
   photoShape: PhotoShape;
   layout: LayoutType;
   templateStyle: string; // Theme name
+  layoutPreset?: 'modern' | 'classic'; // 'modern' or 'classic' layout & font preset
 }
 
 export interface ResumeData {

@@ -38,7 +38,9 @@ import {
   Download, 
   FileText, 
   QrCode,
-  Globe
+  Globe,
+  Layout,
+  Check
 } from 'lucide-react';
 
 interface ResumeEditorProps {
@@ -314,6 +316,17 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   value={data.personalInfo.website}
                   onChange={(e) => updatePersonalInfo('website', e.target.value)}
                   placeholder="https://alexmorgan.dev"
+                  className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Portfolio URL</label>
+                <input
+                  type="url"
+                  value={data.personalInfo.portfolio || ''}
+                  onChange={(e) => updatePersonalInfo('portfolio', e.target.value)}
+                  placeholder="https://alexmorgan.dev/portfolio"
                   className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 text-xs"
                 />
               </div>
@@ -811,6 +824,91 @@ export const ResumeEditor: React.FC<ResumeEditorProps> = ({
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Palette className="w-4 h-4 text-indigo-600" /> Resume Styling & Customization
             </h3>
+
+            {/* Layout Settings Toggle (Modern vs Classic) */}
+            <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Layout className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Layout Settings & Style Preset
+                </span>
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+                  PDF Formatting
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Switch between clean contemporary styling or traditional serif formatting for your resume PDF.
+              </p>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                {/* Modern Toggle */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange({
+                      ...data,
+                      styling: {
+                        ...data.styling,
+                        layoutPreset: 'modern',
+                        fontFamily: 'Inter, sans-serif',
+                        marginSize: 'normal',
+                        lineHeight: 'normal'
+                      }
+                    });
+                  }}
+                  className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                    (data.styling.layoutPreset || 'modern') === 'modern'
+                      ? 'bg-indigo-50/90 dark:bg-indigo-950/70 border-indigo-600 text-indigo-950 dark:text-indigo-100 ring-2 ring-indigo-500/30 font-bold'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs flex items-center gap-1.5">
+                      🚀 Modern Style
+                    </span>
+                    {(data.styling.layoutPreset || 'modern') === 'modern' && (
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                    Sans-serif Inter font, balanced padding & modern pill accents
+                  </p>
+                </button>
+
+                {/* Classic Toggle */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange({
+                      ...data,
+                      styling: {
+                        ...data.styling,
+                        layoutPreset: 'classic',
+                        fontFamily: 'Georgia, serif',
+                        marginSize: 'spacious',
+                        lineHeight: 'relaxed'
+                      }
+                    });
+                  }}
+                  className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                    data.styling.layoutPreset === 'classic'
+                      ? 'bg-indigo-50/90 dark:bg-indigo-950/70 border-indigo-600 text-indigo-950 dark:text-indigo-100 ring-2 ring-indigo-500/30 font-bold'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-700 dark:text-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs flex items-center gap-1.5 font-serif">
+                      📜 Classic Style
+                    </span>
+                    {data.styling.layoutPreset === 'classic' && (
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                    Traditional Georgia serif typography, generous margins & classic rules
+                  </p>
+                </button>
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>

@@ -14,6 +14,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
 
   // --- SPLIT MODE STATE ---
   const [splitImg, setSplitImg] = useState<HTMLImageElement | null>(null);
+  const [splitFile, setSplitFile] = useState<File | null>(null);
   const [splitOrientation, setSplitOrientation] = useState<'v' | 'h'>('v');
   const [splitPct, setSplitPct] = useState<number>(50);
   const splitInputRef = useRef<HTMLInputElement>(null);
@@ -23,12 +24,22 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
   // --- COMBINE MODE STATE ---
   const [imgA, setImgA] = useState<HTMLImageElement | null>(null);
   const [imgB, setImgB] = useState<HTMLImageElement | null>(null);
+  const [fileA, setFileA] = useState<File | null>(null);
+  const [fileB, setFileB] = useState<File | null>(null);
   const [combineOrientation, setCombineOrientation] = useState<'v' | 'h'>('v');
   const [combinePct, setCombinePct] = useState<number>(50);
   const inputARef = useRef<HTMLInputElement>(null);
   const inputBRef = useRef<HTMLInputElement>(null);
   const combineCanvasRef = useRef<HTMLCanvasElement>(null);
   const [copied, setCopied] = useState(false);
+
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
 
   // Helper: compute transparent padding auto-trim
   const computeTrim = useCallback((img: HTMLImageElement) => {
@@ -366,16 +377,25 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
   };
 
   const swapImages = () => {
+    const tempImg = imgA;
     setImgA(imgB);
-    setImgB(imgA);
+    setImgB(tempImg);
+
+    const tempFile = fileA;
+    setFileA(fileB);
+    setFileB(tempFile);
+
     onShowToast('Swapped Image A and Image B');
   };
 
   const handleReset = () => {
     setSplitImg(null);
+    setSplitFile(null);
     setSplitImgTrim(null);
     setImgA(null);
     setImgB(null);
+    setFileA(null);
+    setFileB(null);
     if (splitInputRef.current) splitInputRef.current.value = '';
     if (inputARef.current) inputARef.current.value = '';
     if (inputBRef.current) inputBRef.current.value = '';
@@ -463,6 +483,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                     try {
                       const img = await loadImage(file);
                       setSplitImg(img);
+                      setSplitFile(file);
                       setSplitImgTrim(computeTrim(img));
                       onShowToast('Image loaded into SplitDrop');
                     } catch {
@@ -498,6 +519,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                       try {
                         const img = await loadImage(file);
                         setSplitImg(img);
+                        setSplitFile(file);
                         setSplitImgTrim(computeTrim(img));
                         onShowToast('Image loaded into SplitDrop');
                       } catch {
@@ -509,6 +531,16 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
               </div>
             ) : (
               <>
+                {/* File Info Badge */}
+                {splitFile && (
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-xs font-bold text-indigo-900 dark:text-indigo-200">
+                    <span className="truncate max-w-[240px] sm:max-w-xs">📷 {splitFile.name}</span>
+                    <span className="px-2.5 py-0.5 bg-indigo-600 text-white rounded-full text-[11px] shadow-xs">
+                      Size: {formatSize(splitFile.size)}
+                    </span>
+                  </div>
+                )}
+
                 {/* Orientation Controls */}
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -602,9 +634,16 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
               {/* Slot A */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  Image A
-                </label>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Image A
+                  </span>
+                  {fileA && (
+                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                      {formatSize(fileA.size)}
+                    </span>
+                  )}
+                </div>
                 <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-2xl hover:border-indigo-400 cursor-pointer bg-indigo-50/20 dark:bg-indigo-950/10 overflow-hidden text-center p-2 relative">
                   {imgA ? (
                     <img src={imgA.src} alt="Thumb A" className="h-full w-full object-contain" />
@@ -625,6 +664,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                         try {
                           const img = await loadImage(file);
                           setImgA(img);
+                          setFileA(file);
                           onShowToast('Image A loaded');
                         } catch {
                           onShowToast('Failed to load Image A');
@@ -649,9 +689,16 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
 
               {/* Slot B */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                  Image B
-                </label>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Image B
+                  </span>
+                  {fileB && (
+                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                      {formatSize(fileB.size)}
+                    </span>
+                  )}
+                </div>
                 <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-indigo-200 dark:border-indigo-900/60 rounded-2xl hover:border-indigo-400 cursor-pointer bg-indigo-50/20 dark:bg-indigo-950/10 overflow-hidden text-center p-2 relative">
                   {imgB ? (
                     <img src={imgB.src} alt="Thumb B" className="h-full w-full object-contain" />
@@ -672,6 +719,7 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                         try {
                           const img = await loadImage(file);
                           setImgB(img);
+                          setFileB(file);
                           onShowToast('Image B loaded');
                         } catch {
                           onShowToast('Failed to load Image B');
@@ -682,6 +730,12 @@ export const SplitDropHero: React.FC<SplitDropHeroProps> = ({ onShowToast }) => 
                 </label>
               </div>
             </div>
+
+            {(fileA || fileB) && (
+              <div className="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 text-xs font-bold text-indigo-900 dark:text-indigo-200 text-center">
+                📊 Total Selected Input File Size: <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{formatSize((fileA?.size || 0) + (fileB?.size || 0))}</strong>
+              </div>
+            )}
 
             {/* If both images loaded */}
             {imgA && imgB ? (

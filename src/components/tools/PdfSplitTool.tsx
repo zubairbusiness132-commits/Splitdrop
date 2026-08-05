@@ -114,6 +114,14 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
     }
   };
 
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
       <div className="text-center max-w-xl mx-auto mb-8">
@@ -155,7 +163,7 @@ export const PdfSplitTool: React.FC<PdfSplitToolProps> = ({ onShowToast }) => {
                   {pdfFile.name}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-                  Total Pages: <strong className="text-violet-600 font-bold">{pageCount}</strong>
+                  Total Pages: <strong className="text-violet-600 dark:text-violet-400 font-bold">{pageCount}</strong> • File Size: <strong className="text-gray-800 dark:text-slate-200 font-bold">{formatSize(pdfFile.size)}</strong>
                 </p>
               </div>
             </div>

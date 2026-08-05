@@ -91,7 +91,16 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
     }
   };
 
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
   const totalPages = items.reduce((acc, curr) => acc + curr.pageCount, 0);
+  const totalSize = items.reduce((acc, curr) => acc + curr.file.size, 0);
 
   return (
     <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
@@ -113,6 +122,11 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
         <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
           Supports multiple PDF documents
         </span>
+        {items.length > 0 && (
+          <div className="mt-3 px-3 py-1 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs">
+            📊 {items.length} PDF(s) selected • Total Size: {formatSize(totalSize)} ({totalPages} pages)
+          </div>
+        )}
         <input
           type="file"
           multiple
@@ -126,7 +140,7 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
             <span className="text-xs font-bold text-gray-500 uppercase">
-              {items.length} Files Selected ({totalPages} Total Pages)
+              {items.length} Files Selected ({totalPages} Pages) • Total Size: <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{formatSize(totalSize)}</strong>
             </span>
             <button onClick={() => setItems([])} className="text-xs text-rose-500 hover:underline">
               Clear List
@@ -148,7 +162,7 @@ export const PdfMergeTool: React.FC<PdfMergeToolProps> = ({ onShowToast }) => {
                     {item.file.name}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-                    {item.pageCount} {item.pageCount === 1 ? 'page' : 'pages'}
+                    {item.pageCount} {item.pageCount === 1 ? 'page' : 'pages'} • Size: <strong className="text-gray-700 dark:text-slate-300 font-semibold">{formatSize(item.file.size)}</strong>
                   </p>
                 </div>
 

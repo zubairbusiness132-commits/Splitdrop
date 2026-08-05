@@ -129,6 +129,8 @@ export const ImageCompressorTool: React.FC<ImageCompressorToolProps> = ({ onShow
     setItems(prev => prev.filter(i => i.id !== id));
   };
 
+  const totalOriginalSize = items.reduce((acc, curr) => acc + curr.originalSize, 0);
+
   return (
     <div className="w-full max-w-4xl mx-auto my-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
       <div className="text-center max-w-xl mx-auto mb-8">
@@ -150,6 +152,11 @@ export const ImageCompressorTool: React.FC<ImageCompressorToolProps> = ({ onShow
         <span className="text-xs text-gray-500 dark:text-slate-400 mt-1">
           Supports multiple files (PNG, JPG, WebP)
         </span>
+        {items.length > 0 && (
+          <div className="mt-3 px-3 py-1 bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 font-extrabold text-xs rounded-full inline-flex items-center gap-1.5 shadow-xs">
+            📊 {items.length} file(s) selected • Total Size: {formatSize(totalOriginalSize)}
+          </div>
+        )}
         <input
           type="file"
           multiple
@@ -222,7 +229,7 @@ export const ImageCompressorTool: React.FC<ImageCompressorToolProps> = ({ onShow
       {items.length > 0 && (
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
-            <span>Uploaded Files ({items.length})</span>
+            <span>Uploaded Files ({items.length}) • Total: <strong className="text-rose-600 dark:text-rose-400 font-extrabold">{formatSize(totalOriginalSize)}</strong></span>
             <button onClick={() => setItems([])} className="text-rose-500 hover:underline">
               Clear All
             </button>
