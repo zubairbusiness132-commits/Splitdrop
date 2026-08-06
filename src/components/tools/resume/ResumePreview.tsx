@@ -650,7 +650,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ data, previewRef }
             <img 
               src={personalInfo.photoUrl} 
               alt={personalInfo.fullName}
-              crossOrigin="anonymous"
+              crossOrigin={personalInfo.photoUrl.startsWith('data:') ? undefined : "anonymous"}
               className={`w-20 h-20 object-cover border-2 shadow-sm shrink-0 ${
                 styling.photoShape === 'round' ? 'rounded-full' : 'rounded-xl'
               }`}
@@ -661,7 +661,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ data, previewRef }
           {/* Optional QR Code */}
           {qrDataUrl && (
             <div className="flex flex-col items-center justify-center shrink-0 p-1 bg-white border rounded shadow-xs">
-              <img src={qrDataUrl} alt="QR Code" crossOrigin="anonymous" className="w-14 h-14" />
+              <img src={qrDataUrl} alt="QR Code" className="w-14 h-14" />
               <span className="text-[8px] text-slate-500 font-semibold mt-0.5">{data.qrCode.label}</span>
             </div>
           )}

@@ -102,6 +102,7 @@ export const UI_TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     downloadResult: 'Download Result',
     contactSupport: 'Contact Support',
     aboutSplitDrop: 'About SplitDrop',
+    securityCategory: '🔒 Security, Privacy & Productivity',
     
     // SplitDrop Hero specific
     splitImage: 'Split Image',

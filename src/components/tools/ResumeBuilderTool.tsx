@@ -20,31 +20,25 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useLanguage } from '../../context/LanguageContext';
 
-let canvasHelper: HTMLCanvasElement | null = null;
-let ctxHelper: CanvasRenderingContext2D | null = null;
+let dummyColorDiv: HTMLDivElement | null = null;
 
 function convertOklchColor(match: string): string {
-  if (typeof document === 'undefined') return match;
-  if (!canvasHelper) {
-    canvasHelper = document.createElement('canvas');
-    ctxHelper = canvasHelper.getContext('2d');
-  }
-  if (ctxHelper) {
-    try {
-      ctxHelper.fillStyle = '#123456';
-      ctxHelper.fillStyle = match;
-      const converted = ctxHelper.fillStyle;
-      if (converted && !converted.includes('oklch') && converted !== '#123456') {
-        return converted;
-      }
-      ctxHelper.fillStyle = '#654321';
-      ctxHelper.fillStyle = match;
-      if (ctxHelper.fillStyle !== '#654321' && !ctxHelper.fillStyle.includes('oklch')) {
-        return ctxHelper.fillStyle;
-      }
-    } catch {
-      // ignore
+  if (typeof document === 'undefined') return '#4f46e5';
+  try {
+    if (!dummyColorDiv) {
+      dummyColorDiv = document.createElement('div');
+      dummyColorDiv.style.display = 'none';
+      dummyColorDiv.id = 'oklch-converter-dummy-div';
+      document.body.appendChild(dummyColorDiv);
     }
+    dummyColorDiv.style.color = '#000000';
+    dummyColorDiv.style.color = match;
+    const computed = window.getComputedStyle(dummyColorDiv).color;
+    if (computed && !computed.includes('oklch') && !computed.includes('color(')) {
+      return computed;
+    }
+  } catch (e) {
+    console.warn('[PDF Export] Color conversion fallback:', e);
   }
   return '#4f46e5';
 }
@@ -55,6 +49,7 @@ function replaceOklchInCss(cssText: string): string {
 }
 
 function sanitizeOklchInDocument(clonedDoc: Document) {
+  // 1. Sanitize all <style> tags
   const styleTags = Array.from(clonedDoc.querySelectorAll('style'));
   styleTags.forEach(style => {
     if (style.textContent && style.textContent.includes('oklch')) {
@@ -62,6 +57,7 @@ function sanitizeOklchInDocument(clonedDoc: Document) {
     }
   });
 
+  // 2. Try sanitizing linked stylesheet rules if accessible
   try {
     Array.from(clonedDoc.styleSheets).forEach(sheet => {
       try {
@@ -74,19 +70,28 @@ function sanitizeOklchInDocument(clonedDoc: Document) {
           });
         }
       } catch {
-        // Protection
+        // Protection against CORS stylesheet rules access
       }
     });
   } catch {
     // Ignore
   }
 
+  // 3. Sanitize inline styles and strip decorative filters/animations from all elements
   const allElements = Array.from(clonedDoc.querySelectorAll('*')) as HTMLElement[];
   allElements.forEach(el => {
     const styleAttr = el.getAttribute('style');
     if (styleAttr && styleAttr.includes('oklch')) {
       el.setAttribute('style', replaceOklchInCss(styleAttr));
     }
+
+    // Strip backdrop-filter, filter, animation, transition from cloned nodes to avoid html2canvas failures
+    el.style.setProperty('backdrop-filter', 'none', 'important');
+    el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+    el.style.setProperty('filter', 'none', 'important');
+    el.style.setProperty('-webkit-filter', 'none', 'important');
+    el.style.setProperty('animation', 'none', 'important');
+    el.style.setProperty('transition', 'none', 'important');
   });
 }
 
@@ -195,123 +200,168 @@ export const ResumeBuilderTool: React.FC<ResumeBuilderToolProps> = ({ onShowToas
   };
 
   const handleDownloadPDF = async () => {
+    console.log('[PDF Export] Step 1: Locating resume preview element...');
+    
+    // Ensure mobile view displays preview if currently on editor tab on small screens
+    if (mobileView === 'editor') {
+      console.log('[PDF Export] Mobile view set to editor. Temporarily switching to preview for DOM capture...');
+      setMobileView('preview');
+      await new Promise(r => setTimeout(r, 120));
+    }
+
     const element = previewRef.current || (document.querySelector('.resume-preview') as HTMLElement) || (document.getElementById('resume-preview-sheet') as HTMLElement);
 
     if (!element) {
+      console.error('[PDF Export Error] Preview element not found in DOM');
       onShowToast('Resume preview element not found.');
       return;
     }
 
+    console.log('[PDF Export] Step 2: Found preview element:', element.id || element.className);
     onShowToast('Generating downloadable PDF...');
 
     try {
       const imgElements = Array.from(element.querySelectorAll('img'));
+      console.log(`[PDF Export] Step 3: Checking ${imgElements.length} image(s) load status...`);
+
       await Promise.all(
         imgElements.map(
-          img =>
+          (img, i) =>
             new Promise<void>(resolve => {
-              if (img.complete) {
+              if (img.complete && img.naturalWidth !== 0) {
+                console.log(`[PDF Export] Image #${i + 1} ready (${img.src.slice(0, 40)}...)`);
                 resolve();
               } else {
-                img.onload = () => resolve();
-                img.onerror = () => resolve();
+                console.log(`[PDF Export] Waiting for image #${i + 1} to finish loading...`);
+                img.onload = () => {
+                  console.log(`[PDF Export] Image #${i + 1} loaded successfully.`);
+                  resolve();
+                };
+                img.onerror = () => {
+                  console.warn(`[PDF Export] Image #${i + 1} failed to load, proceeding with export`);
+                  resolve();
+                };
               }
             })
         )
       );
 
-      const exportPdfFromCanvas = (canvas: HTMLCanvasElement) => {
-        const imgData = canvas.toDataURL('image/jpeg', 0.98);
-        const isLetter = activeResume.styling.paperSize === 'Letter';
-        const paperFormat = isLetter ? 'letter' : 'a4';
-
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: paperFormat
-        });
-
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = pdfWidth / imgWidth;
-        const calculatedImgHeight = imgHeight * ratio;
-
-        let heightLeft = calculatedImgHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
-        heightLeft -= pdfHeight;
-
-        while (heightLeft > 1) {
-          position -= pdfHeight;
-          pdf.addPage(paperFormat, 'portrait');
-          pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
-          heightLeft -= pdfHeight;
-        }
-
-        const rawName = activeResume.personalInfo.fullName?.trim();
-        const cleanName = rawName ? rawName.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'My';
-        const fileName = `${cleanName}_Resume.pdf`;
-
-        try {
-          pdf.save(fileName);
-        } catch (saveError) {
-          const blob = pdf.output('blob');
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = fileName;
-          link.target = '_blank';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-        }
-      };
+      console.log('[PDF Export] Step 4: Starting html2canvas rendering process...');
 
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         allowTaint: false,
-        logging: false,
+        logging: true,
         backgroundColor: '#FFFFFF',
         scrollX: 0,
         scrollY: 0,
         windowWidth: 1200,
         onclone: clonedDoc => {
+          console.log('[PDF Export] Step 4a: Sanitizing cloned DOM (oklch, filters, themes)...');
           sanitizeOklchInDocument(clonedDoc);
           clonedDoc.documentElement.classList.remove('dark');
           if (clonedDoc.body) {
             clonedDoc.body.classList.remove('dark');
           }
+
+          // Strip crossorigin from data URL images in cloned tree
+          const clonedImgs = Array.from(clonedDoc.querySelectorAll('img'));
+          clonedImgs.forEach(img => {
+            if (img.src && img.src.startsWith('data:')) {
+              img.removeAttribute('crossorigin');
+            }
+          });
+
           const clonedSheet = (clonedDoc.querySelector('.resume-preview') as HTMLElement) || clonedDoc.getElementById('resume-preview-sheet');
           if (clonedSheet) {
             let parent: HTMLElement | null = clonedSheet;
             while (parent && parent !== clonedDoc.body) {
-              parent.style.display = 'block';
-              parent.style.visibility = 'visible';
-              parent.style.opacity = '1';
-              parent.style.transform = 'none';
-              parent.style.maxHeight = 'none';
-              parent.style.overflow = 'visible';
+              parent.style.setProperty('display', 'block', 'important');
+              parent.style.setProperty('visibility', 'visible', 'important');
+              parent.style.setProperty('opacity', '1', 'important');
+              parent.style.setProperty('transform', 'none', 'important');
+              parent.style.setProperty('max-height', 'none', 'important');
+              parent.style.setProperty('overflow', 'visible', 'important');
+              parent.style.setProperty('filter', 'none', 'important');
+              parent.style.setProperty('backdrop-filter', 'none', 'important');
               parent = parent.parentElement;
             }
-            clonedSheet.style.boxShadow = 'none';
-            clonedSheet.style.margin = '0';
-            clonedSheet.style.transform = 'none';
-            clonedSheet.style.borderRadius = '0';
+            clonedSheet.style.setProperty('box-shadow', 'none', 'important');
+            clonedSheet.style.setProperty('margin', '0', 'important');
+            clonedSheet.style.setProperty('transform', 'none', 'important');
+            clonedSheet.style.setProperty('border-radius', '0', 'important');
+            clonedSheet.style.setProperty('filter', 'none', 'important');
+            clonedSheet.style.setProperty('backdrop-filter', 'none', 'important');
           }
         }
       });
 
-      exportPdfFromCanvas(canvas);
+      console.log(`[PDF Export] Step 5: Canvas rendered successfully (${canvas.width}x${canvas.height}px). Creating jsPDF document...`);
+
+      if (canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Canvas was rendered with 0x0 dimensions. Preview element might be hidden.');
+      }
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const isLetter = activeResume.styling.paperSize === 'Letter';
+      const paperFormat = isLetter ? 'letter' : 'a4';
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: paperFormat
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = pdfWidth / imgWidth;
+      const calculatedImgHeight = imgHeight * ratio;
+
+      let heightLeft = calculatedImgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 1) {
+        position -= pdfHeight;
+        pdf.addPage(paperFormat, 'portrait');
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, calculatedImgHeight, undefined, 'FAST');
+        heightLeft -= pdfHeight;
+      }
+
+      const rawName = activeResume.personalInfo.fullName?.trim();
+      const cleanName = rawName ? rawName.replace(/[^a-zA-Z0-9_\-]/g, '_') : 'My';
+      const fileName = `${cleanName}_Resume.pdf`;
+
+      console.log(`[PDF Export] Step 6: Triggering PDF file download: "${fileName}"...`);
+      try {
+        pdf.save(fileName);
+      } catch (saveError) {
+        const saveErrMsg = saveError instanceof Error ? saveError.message : String(saveError);
+        console.warn('[PDF Export] Direct pdf.save failed, trying blob download fallback:', saveErrMsg);
+        const blob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      }
+
       onShowToast('PDF downloaded successfully!');
+      console.log('[PDF Export] PDF export completed successfully!');
     } catch (err) {
-      console.error('PDF export error:', err);
-      onShowToast('PDF generation failed. Please try again.');
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error('[PDF Export Error]:', errorMsg);
+      onShowToast(`PDF Generation Failed: ${errorMsg}`);
     }
   };
 

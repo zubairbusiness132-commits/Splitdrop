@@ -127,35 +127,40 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Col 4 Legal & Information */}
+          {/* Col 4 Platform & Legal */}
           <div>
             <h5 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">
-              {t('legalAndSupport', 'Legal & Support')}
+              {t('platformAndSupport', 'Platform & Support')}
             </h5>
             <ul className="space-y-2 text-xs font-medium text-slate-600 dark:text-slate-400">
               <li>
-                <a href={getLinkUrl('/about.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/about.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  {t('aboutSplitDrop', 'About SplitDrop')}
+                <a href={getLinkUrl('/dashboard.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/dashboard.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 font-bold text-indigo-600 dark:text-indigo-400 transition-colors">
+                  ⭐ User Dashboard
                 </a>
               </li>
               <li>
+                <a href={getLinkUrl('/categories.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/categories.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  ⚡ Tool Categories Directory
+                </a>
+              </li>
+              <li>
+                <a href={getLinkUrl('/help.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/help.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  ❓ Help Center & Guides
+                </a>
+              </li>
+              <li>
+                <a href={getLinkUrl('/changelog.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/changelog.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  📜 Changelog & Updates
+                </a>
+              </li>
+              <li>
+                <a href={getLinkUrl('/feedback.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/feedback.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  💬 Send Feedback
+                </a>
+              </li>
+              <li className="pt-2 border-t border-slate-100 dark:border-slate-800">
                 <a href={getLinkUrl('/privacy.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/privacy.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                   {t('privacy', 'Privacy Policy')}
-                </a>
-              </li>
-              <li>
-                <a href={getLinkUrl('/terms.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/terms.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  {t('terms', 'Terms of Service')}
-                </a>
-              </li>
-              <li>
-                <a href={getLinkUrl('/disclaimer.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/disclaimer.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  {t('disclaimer', 'Disclaimer')}
-                </a>
-              </li>
-              <li>
-                <a href={getLinkUrl('/contact.html')} onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/contact.html')); }} className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  {t('contactSupport', 'Contact Support')}
                 </a>
               </li>
             </ul>

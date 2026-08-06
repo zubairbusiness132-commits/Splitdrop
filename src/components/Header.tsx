@@ -58,11 +58,11 @@ export const Header: React.FC<HeaderProps> = ({
         </a>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-2 font-medium text-xs lg:text-sm text-slate-600 dark:text-slate-300">
+        <nav className="hidden md:flex items-center gap-1.5 font-medium text-xs lg:text-sm text-slate-600 dark:text-slate-300">
           <a
             href={getLinkUrl('/')}
             onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/')); }}
-            className={`px-3.5 py-2 rounded-xl transition-all ${
+            className={`px-3 py-1.5 rounded-xl transition-all ${
               currentPath === '/' || currentPath === '/index.html'
                 ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 shadow-xs'
                 : 'hover:text-indigo-600 hover:bg-white/60 dark:hover:bg-slate-800/60'
@@ -71,18 +71,42 @@ export const Header: React.FC<HeaderProps> = ({
             SplitDrop
           </a>
 
+          <a
+            href={getLinkUrl('/dashboard.html')}
+            onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/dashboard.html')); }}
+            className={`px-3 py-1.5 rounded-xl transition-all ${
+              currentPath.includes('dashboard')
+                ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 shadow-xs'
+                : 'hover:text-indigo-600 hover:bg-white/60 dark:hover:bg-slate-800/60'
+            }`}
+          >
+            Dashboard
+          </a>
+
+          <a
+            href={getLinkUrl('/categories.html')}
+            onClick={(e) => { e.preventDefault(); onNavigate(getLinkUrl('/categories.html')); }}
+            className={`px-3 py-1.5 rounded-xl transition-all ${
+              currentPath.includes('categories')
+                ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 shadow-xs'
+                : 'hover:text-indigo-600 hover:bg-white/60 dark:hover:bg-slate-800/60'
+            }`}
+          >
+            Categories
+          </a>
+
           {/* Tools Dropdown */}
           <div className="relative">
             <button
               onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
               onBlur={() => setTimeout(() => setToolsDropdownOpen(false), 200)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all cursor-pointer"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all cursor-pointer"
             >
               <Wrench className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> {t('freeTools', 'Free Tools')} <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
 
             {toolsDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl shadow-2xl p-2 space-y-1 animate-fadeIn z-50">
+              <div className="absolute top-full left-0 mt-2 w-64 max-h-96 overflow-y-auto bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl shadow-2xl p-2 space-y-1 animate-fadeIn z-50">
                 {translatedTools.map((tool) => (
                   <a
                     key={tool.id}
